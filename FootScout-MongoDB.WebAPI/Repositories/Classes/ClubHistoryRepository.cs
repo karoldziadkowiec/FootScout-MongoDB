@@ -92,8 +92,14 @@ namespace FootScout_MongoDB.WebAPI.Repositories.Classes
 
         public async Task UpdateClubHistory(ClubHistory clubHistory)
         {
-            var filter = Builders<ClubHistory>.Filter.Eq(ch => ch.Id, clubHistory.Id);
-            await _dbContext.ClubHistoriesCollection.ReplaceOneAsync(filter, clubHistory);
+            var clubHistoryFilter = Builders<ClubHistory>.Filter.Eq(ch => ch.Id, clubHistory.Id);
+            await _dbContext.ClubHistoriesCollection.ReplaceOneAsync(clubHistoryFilter, clubHistory);
+
+            if (clubHistory.Achievements != null && clubHistory.Achievements.Id != 0)
+            {
+                var achievementsFilter = Builders<Achievements>.Filter.Eq(a => a.Id, clubHistory.Achievements.Id);
+                await _dbContext.AchievementsCollection.ReplaceOneAsync(achievementsFilter, clubHistory.Achievements);
+            }
         }
 
         public async Task DeleteClubHistory(int clubHistoryId)

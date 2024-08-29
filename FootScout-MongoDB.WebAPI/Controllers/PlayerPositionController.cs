@@ -1,5 +1,6 @@
 ﻿using FootScout_MongoDB.WebAPI.Entities;
 using FootScout_MongoDB.WebAPI.Repositories.Interfaces;
+using FootScout_MongoDB.WebAPI.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,10 +12,12 @@ namespace FootScout_MongoDB.WebAPI.Controllers
     public class PlayerPositionController : ControllerBase
     {
         private readonly IPlayerPositionRepository _playerPositionRepository;
+        private readonly INewIdGeneratorService _newIdGeneratorService;
 
-        public PlayerPositionController(IPlayerPositionRepository playerPositionRepository)
+        public PlayerPositionController(IPlayerPositionRepository playerPositionRepository, INewIdGeneratorService newIdGeneratorService)
         {
             _playerPositionRepository = playerPositionRepository;
+            _newIdGeneratorService = newIdGeneratorService;
         }
 
         // GET: api/player-positions
@@ -59,6 +62,7 @@ namespace FootScout_MongoDB.WebAPI.Controllers
             if (playerPosition == null)
                 return BadRequest("Invalid player position data.");
 
+            playerPosition.Id = await _newIdGeneratorService.GenerateNewPlayerPositionId();
             await _playerPositionRepository.CreatePlayerPosition(playerPosition);
             return Ok(playerPosition);
         }

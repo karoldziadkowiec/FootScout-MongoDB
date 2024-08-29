@@ -1173,8 +1173,7 @@ namespace FootScout_MongoDB.WebAPI.Services.Classes
 
         public async Task<MemoryStream> ExportUsersToCsv()
         {
-            var users = await _dbContext.UsersCollection.Find(FilterDefinition<User>.Empty).ToListAsync();
-
+            var users = await GetUsers();
             var csv = new StringBuilder();
             csv.AppendLine("E-mail,First Name,Last Name,Phone Number,Location,Creation Date");
 

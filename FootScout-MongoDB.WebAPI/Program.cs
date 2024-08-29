@@ -73,6 +73,10 @@ namespace FootScout_MongoDB.WebAPI
             builder.Services.AddScoped<IPlayerPositionRepository, PlayerPositionRepository>();
             builder.Services.AddScoped<IPlayerFootRepository, PlayerFootRepository>();
             builder.Services.AddScoped<IOfferStatusRepository, OfferStatusRepository>();
+            builder.Services.AddScoped<ISalaryRangeRepository, SalaryRangeRepository>();
+            builder.Services.AddScoped<IClubAdvertisementRepository, ClubAdvertisementRepository>();
+            builder.Services.AddScoped<IClubOfferRepository, ClubOfferRepository>();
+
 
             // AutoMapper service
             builder.Services.AddAutoMapper(typeof(Program));
