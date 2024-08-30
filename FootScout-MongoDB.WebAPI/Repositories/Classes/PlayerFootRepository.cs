@@ -17,6 +17,13 @@ namespace FootScout_MongoDB.WebAPI.Repositories.Classes
         public async Task<IEnumerable<PlayerFoot>> GetPlayerFeet()
             => await _dbContext.PlayerFeetCollection.Find(_ => true).ToListAsync();
 
+        public async Task<PlayerFoot> GetPlayerFoot(int footId)
+        {
+            return await _dbContext.PlayerFeetCollection
+                .Find(pf => pf.Id == footId)
+                .FirstOrDefaultAsync();
+        }
+
         public async Task<string> GetPlayerFootName(int footId)
         {
             var playerFoot = await _dbContext.PlayerFeetCollection

@@ -15,13 +15,17 @@ namespace FootScout_MongoDB.WebAPI.Controllers
     {
         private readonly IClubAdvertisementRepository _clubAdvertisementRepository;
         private readonly ISalaryRangeRepository _salaryRangeRepository;
+        private readonly IPlayerPositionRepository _playerPositionRepository;
+        private readonly IUserRepository _userRepository;
         private readonly INewIdGeneratorService _newIdGeneratorService;
         private readonly IMapper _mapper;
 
-        public ClubAdvertisementController(IClubAdvertisementRepository clubAdvertisementRepository, ISalaryRangeRepository salaryRangeRepository, INewIdGeneratorService newIdGeneratorService, IMapper mapper)
+        public ClubAdvertisementController(IClubAdvertisementRepository clubAdvertisementRepository, ISalaryRangeRepository salaryRangeRepository, IPlayerPositionRepository playerPositionRepository, IUserRepository userRepository, INewIdGeneratorService newIdGeneratorService, IMapper mapper)
         {
             _clubAdvertisementRepository = clubAdvertisementRepository;
             _salaryRangeRepository = salaryRangeRepository;
+            _playerPositionRepository = playerPositionRepository;
+            _userRepository = userRepository;
             _newIdGeneratorService = newIdGeneratorService;
             _mapper = mapper;
         }
@@ -81,10 +85,20 @@ namespace FootScout_MongoDB.WebAPI.Controllers
             await _salaryRangeRepository.CreateSalaryRange(salaryRange);
 
             var clubAdvertisement = _mapper.Map<ClubAdvertisement>(dto);
-            clubAdvertisement.SalaryRangeId = salaryRange.Id;
             clubAdvertisement.Id = await _newIdGeneratorService.GenerateNewClubAdvertisementId();
-            await _clubAdvertisementRepository.CreateClubAdvertisement(clubAdvertisement);
+            clubAdvertisement.SalaryRangeId = salaryRange.Id;
+            clubAdvertisement.SalaryRange = salaryRange;
 
+            if (clubAdvertisement.PlayerPositionId != 0)
+                clubAdvertisement.PlayerPosition = await _playerPositionRepository.GetPlayerPosition(clubAdvertisement.PlayerPositionId);
+
+            if (clubAdvertisement.ClubMemberId is not null)
+            {
+                var clubMember = await _userRepository.GetUser(clubAdvertisement.ClubMemberId);
+                clubAdvertisement.ClubMember = _mapper.Map<User>(clubMember);
+            }
+
+            await _clubAdvertisementRepository.CreateClubAdvertisement(clubAdvertisement);
             return Ok(clubAdvertisement);
         }
 
@@ -97,6 +111,15 @@ namespace FootScout_MongoDB.WebAPI.Controllers
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
+
+            if (clubAdvertisement.PlayerPositionId != 0)
+                clubAdvertisement.PlayerPosition = await _playerPositionRepository.GetPlayerPosition(clubAdvertisement.PlayerPositionId);
+
+            if (clubAdvertisement.ClubMemberId is not null)
+            {
+                var clubMember = await _userRepository.GetUser(clubAdvertisement.ClubMemberId);
+                clubAdvertisement.ClubMember = _mapper.Map<User>(clubMember);
+            }
 
             await _clubAdvertisementRepository.UpdateClubAdvertisement(clubAdvertisement);
             return NoContent();

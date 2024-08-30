@@ -12,7 +12,7 @@ namespace FootScout_MongoDB.WebAPI.Entities
         public int PlayerPositionId { get; set; }
 
         [BsonIgnoreIfNull]
-        public PlayerPosition PlayerPosition { get; set; }
+        public virtual PlayerPosition PlayerPosition { get; set; }
 
         [BsonElement("ClubName")]
         public string ClubName { get; set; }
@@ -33,12 +33,12 @@ namespace FootScout_MongoDB.WebAPI.Entities
         public int AchievementsId { get; set; }
 
         [BsonIgnoreIfNull]
-        public Achievements Achievements { get; set; }
+        public virtual Achievements Achievements { get; set; }
 
         [BsonElement("PlayerId")]
         public string PlayerId { get; set; }
 
         [BsonIgnoreIfNull]
-        public User Player { get; set; }
+        public virtual User Player { get; set; }
     }
 }

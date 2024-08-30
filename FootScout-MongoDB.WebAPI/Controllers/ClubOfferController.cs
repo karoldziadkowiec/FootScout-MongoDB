@@ -14,12 +14,20 @@ namespace FootScout_MongoDB.WebAPI.Controllers
     public class ClubOfferController : ControllerBase
     {
         private readonly IClubOfferRepository _clubOfferRepository;
+        private readonly IPlayerAdvertisementRepository _playerAdvertisementRepository;
+        private readonly IOfferStatusRepository _offerStatusRepository;
+        private readonly IPlayerPositionRepository _playerPositionRepository;
+        private readonly IUserRepository _userRepository;
         private readonly INewIdGeneratorService _newIdGeneratorService;
         private readonly IMapper _mapper;
 
-        public ClubOfferController(IClubOfferRepository clubOfferRepository, INewIdGeneratorService newIdGeneratorService, IMapper mapper)
+        public ClubOfferController(IClubOfferRepository clubOfferRepository, IPlayerAdvertisementRepository playerAdvertisementRepository, IOfferStatusRepository offerStatusRepository, IPlayerPositionRepository playerPositionRepository, IUserRepository userRepository, INewIdGeneratorService newIdGeneratorService, IMapper mapper)
         {
             _clubOfferRepository = clubOfferRepository;
+            _playerAdvertisementRepository = playerAdvertisementRepository;
+            _offerStatusRepository = offerStatusRepository;
+            _playerPositionRepository = playerPositionRepository;
+            _userRepository = userRepository;
             _newIdGeneratorService = newIdGeneratorService;
             _mapper = mapper;
         }
@@ -76,8 +84,20 @@ namespace FootScout_MongoDB.WebAPI.Controllers
 
             var clubOffer = _mapper.Map<ClubOffer>(dto);
             clubOffer.Id = await _newIdGeneratorService.GenerateNewClubOfferId();
-            await _clubOfferRepository.CreateClubOffer(clubOffer);
 
+            if (clubOffer.PlayerAdvertisementId != 0)
+                clubOffer.PlayerAdvertisement = await _playerAdvertisementRepository.GetPlayerAdvertisement(clubOffer.PlayerAdvertisementId);
+
+            if (clubOffer.PlayerPositionId != 0)
+                clubOffer.PlayerPosition = await _playerPositionRepository.GetPlayerPosition(clubOffer.PlayerPositionId);
+
+            if (clubOffer.ClubMemberId is not null)
+            {
+                var clubMember = await _userRepository.GetUser(clubOffer.ClubMemberId);
+                clubOffer.ClubMember = _mapper.Map<User>(clubMember);
+            }
+
+            await _clubOfferRepository.CreateClubOffer(clubOffer);
             return Ok(clubOffer);
         }
 
@@ -90,6 +110,21 @@ namespace FootScout_MongoDB.WebAPI.Controllers
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
+
+            if (clubOffer.PlayerAdvertisementId != 0)
+                clubOffer.PlayerAdvertisement = await _playerAdvertisementRepository.GetPlayerAdvertisement(clubOffer.PlayerAdvertisementId);
+
+            if (clubOffer.OfferStatusId != 0)
+                clubOffer.OfferStatus = await _offerStatusRepository.GetOfferStatus(clubOffer.OfferStatusId);
+
+            if (clubOffer.PlayerPositionId != 0)
+                clubOffer.PlayerPosition = await _playerPositionRepository.GetPlayerPosition(clubOffer.PlayerPositionId);
+
+            if (clubOffer.ClubMemberId is not null)
+            {
+                var clubMember = await _userRepository.GetUser(clubOffer.ClubMemberId);
+                clubOffer.ClubMember = _mapper.Map<User>(clubMember);
+            }
 
             await _clubOfferRepository.UpdateClubOffer(clubOffer);
             return NoContent();

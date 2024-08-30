@@ -1,5 +1,6 @@
 using FootScout_MongoDB.WebAPI.DbManager;
 using FootScout_MongoDB.WebAPI.Entities;
+using FootScout_MongoDB.WebAPI.HubManager;
 using FootScout_MongoDB.WebAPI.Models.Constants;
 using FootScout_MongoDB.WebAPI.Repositories.Classes;
 using FootScout_MongoDB.WebAPI.Repositories.Interfaces;
@@ -65,18 +66,24 @@ namespace FootScout_MongoDB.WebAPI
             builder.Services.AddScoped<IRoleService, RoleService>();
             builder.Services.AddScoped<ITokenService, TokenService>();
             builder.Services.AddScoped<ICookieService, CookieService>();
+            builder.Services.AddScoped<IChatService, ChatService>();
+            builder.Services.AddScoped<IMessageService, MessageService>();
 
             // Repositories
-            builder.Services.AddScoped<IUserRepository, UserRepository>();
-            builder.Services.AddScoped<IClubHistoryRepository, ClubHistoryRepository>();
-            builder.Services.AddScoped<IAchievementsRepository, AchievementsRepository>();
             builder.Services.AddScoped<IPlayerPositionRepository, PlayerPositionRepository>();
             builder.Services.AddScoped<IPlayerFootRepository, PlayerFootRepository>();
             builder.Services.AddScoped<IOfferStatusRepository, OfferStatusRepository>();
+            builder.Services.AddScoped<IUserRepository, UserRepository>();
+            builder.Services.AddScoped<IClubHistoryRepository, ClubHistoryRepository>();
+            builder.Services.AddScoped<IAchievementsRepository, AchievementsRepository>();
             builder.Services.AddScoped<ISalaryRangeRepository, SalaryRangeRepository>();
-            builder.Services.AddScoped<IClubAdvertisementRepository, ClubAdvertisementRepository>();
+            builder.Services.AddScoped<IPlayerAdvertisementRepository, PlayerAdvertisementRepository>();
+            builder.Services.AddScoped<IFavoritePlayerAdvertisementRepository, FavoritePlayerAdvertisementRepository>();
             builder.Services.AddScoped<IClubOfferRepository, ClubOfferRepository>();
-
+            builder.Services.AddScoped<IClubAdvertisementRepository, ClubAdvertisementRepository>();
+            builder.Services.AddScoped<IFavoriteClubAdvertisementRepository, FavoriteClubAdvertisementRepository>();
+            builder.Services.AddScoped<IPlayerOfferRepository, PlayerOfferRepository>();
+            builder.Services.AddScoped<IProblemRepository, ProblemRepository>();
 
             // AutoMapper service
             builder.Services.AddAutoMapper(typeof(Program));
@@ -160,7 +167,7 @@ namespace FootScout_MongoDB.WebAPI
 
             // Endpoints
             app.MapControllers();
-            //app.MapHub<ChatHub>("/chathub");
+            app.MapHub<ChatHub>("/chathub");
 
             // Seeders
             using (var scope = app.Services.CreateScope())

@@ -17,6 +17,13 @@ namespace FootScout_MongoDB.WebAPI.Repositories.Classes
         public async Task<IEnumerable<PlayerPosition>> GetPlayerPositions()
             => await _dbContext.PlayerPositionsCollection.Find(_ => true).ToListAsync();
 
+        public async Task<PlayerPosition> GetPlayerPosition(int positionId)
+        {
+            return await _dbContext.PlayerPositionsCollection
+                .Find(pp => pp.Id == positionId)
+                .FirstOrDefaultAsync();
+        }
+
         public async Task<int> GetPlayerPositionCount()
         {
             return (int)await _dbContext.PlayerPositionsCollection.CountDocumentsAsync(FilterDefinition<PlayerPosition>.Empty);

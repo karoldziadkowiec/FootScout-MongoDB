@@ -37,9 +37,8 @@ namespace FootScout_MongoDB.WebAPI.Services.Classes
 
         public async Task AddRoleToUser(string userId, string roleName)
         {
-            var role = await _dbContext.RolesCollection
-                .Find(r => r.Name == roleName)
-                .FirstOrDefaultAsync();
+            var user = await _dbContext.UsersCollection.Find(u => u.Id == userId).FirstOrDefaultAsync();
+            var role = await _dbContext.RolesCollection.Find(r => r.Name == roleName).FirstOrDefaultAsync();
 
             if (role == null)
                 throw new ArgumentException($"Role {roleName} does not exist.");
@@ -48,7 +47,9 @@ namespace FootScout_MongoDB.WebAPI.Services.Classes
             {
                 Id = await _newIdGeneratorService.GenerateNewUserRoleId(),
                 UserId = userId,
-                RoleId = role.Id
+                User = user,
+                RoleId = role.Id,
+                Role = role,
             };
 
             await _dbContext.UserRolesCollection.InsertOneAsync(userRole);

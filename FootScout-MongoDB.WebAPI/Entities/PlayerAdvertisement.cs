@@ -11,7 +11,7 @@ namespace FootScout_MongoDB.WebAPI.Entities
         public int PlayerPositionId { get; set; }
 
         [BsonIgnoreIfNull]
-        public PlayerPosition PlayerPosition { get; set; }
+        public virtual PlayerPosition PlayerPosition { get; set; }
 
         [BsonElement("League")]
         public string League { get; set; }

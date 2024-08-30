@@ -11,7 +11,7 @@ namespace FootScout_MongoDB.WebAPI.Entities
         public int PlayerAdvertisementId { get; set; }
 
         [BsonIgnoreIfNull]
-        public PlayerAdvertisement PlayerAdvertisement { get; set; }
+        public virtual PlayerAdvertisement PlayerAdvertisement { get; set; }
 
         [BsonElement("UserId")]
         public string UserId { get; set; }

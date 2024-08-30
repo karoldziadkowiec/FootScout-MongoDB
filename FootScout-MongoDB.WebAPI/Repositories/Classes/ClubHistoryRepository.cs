@@ -16,68 +16,16 @@ namespace FootScout_MongoDB.WebAPI.Repositories.Classes
 
         public async Task<ClubHistory> GetClubHistory(int clubHistoryId)
         {
-            var clubHistory = await _dbContext.ClubHistoriesCollection
+            return await _dbContext.ClubHistoriesCollection
                 .Find(ch => ch.Id == clubHistoryId)
                 .FirstOrDefaultAsync();
-
-            if (clubHistory != null)
-            { 
-                if (clubHistory.PlayerPositionId != null)
-                {
-                    clubHistory.PlayerPosition = await _dbContext.PlayerPositionsCollection
-                        .Find(pp => pp.Id == clubHistory.PlayerPositionId)
-                        .FirstOrDefaultAsync();
-                }
-
-                if (clubHistory.AchievementsId != null)
-                {
-                    clubHistory.Achievements = await _dbContext.AchievementsCollection
-                        .Find(a => a.Id == clubHistory.AchievementsId)
-                        .FirstOrDefaultAsync();
-                }
-
-                if (clubHistory.PlayerId != null)
-                {
-                    clubHistory.Player = await _dbContext.UsersCollection
-                        .Find(u => u.Id == clubHistory.PlayerId)
-                        .FirstOrDefaultAsync();
-                }
-            }
-
-            return clubHistory;
         }
 
         public async Task<IEnumerable<ClubHistory>> GetAllClubHistory()
         {
-            var clubHistories = await _dbContext.ClubHistoriesCollection
+            return await _dbContext.ClubHistoriesCollection
                 .Find(_ => true)
                 .ToListAsync();
-
-            foreach (var clubHistory in clubHistories)
-            {
-                if (clubHistory.PlayerPositionId != null)
-                {
-                    clubHistory.PlayerPosition = await _dbContext.PlayerPositionsCollection
-                        .Find(pp => pp.Id == clubHistory.PlayerPositionId)
-                        .FirstOrDefaultAsync();
-                }
-
-                if (clubHistory.AchievementsId != null)
-                {
-                    clubHistory.Achievements = await _dbContext.AchievementsCollection
-                        .Find(a => a.Id == clubHistory.AchievementsId)
-                        .FirstOrDefaultAsync();
-                }
-
-                if (clubHistory.PlayerId != null)
-                {
-                    clubHistory.Player = await _dbContext.UsersCollection
-                        .Find(u => u.Id == clubHistory.PlayerId)
-                        .FirstOrDefaultAsync();
-                }
-            }
-
-            return clubHistories;
         }
 
         public async Task<int> GetClubHistoryCount()

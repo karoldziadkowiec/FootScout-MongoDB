@@ -75,7 +75,7 @@ namespace FootScout_MongoDB.WebAPI.Services.Classes
 
         public async Task<int> GenerateNewSalaryRangeId()
         {
-            var lastItem = await _dbContext.ClubHistoriesCollection
+            var lastItem = await _dbContext.SalaryRangesCollection
                 .Find(_ => true)
                 .SortByDescending(sr => sr.Id)
                 .FirstOrDefaultAsync();

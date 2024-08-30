@@ -15,13 +15,17 @@ namespace FootScout_MongoDB.WebAPI.Controllers
     {
         private readonly IClubHistoryRepository _clubHistoryRepository;
         private readonly IAchievementsRepository _achievementsRepository;
+        private readonly IPlayerPositionRepository _playerPositionRepository;
+        private readonly IUserRepository _userRepository;
         private readonly INewIdGeneratorService _newIdGeneratorService;
         private readonly IMapper _mapper;
 
-        public ClubHistoryController(IClubHistoryRepository clubHistoryRepository, IAchievementsRepository achievementsRepository, INewIdGeneratorService newIdGeneratorService, IMapper mapper)
+        public ClubHistoryController(IClubHistoryRepository clubHistoryRepository, IAchievementsRepository achievementsRepository, IPlayerPositionRepository playerPositionRepository, IUserRepository userRepository, INewIdGeneratorService newIdGeneratorService, IMapper mapper)
         {
             _clubHistoryRepository = clubHistoryRepository;
             _achievementsRepository = achievementsRepository;
+            _playerPositionRepository = playerPositionRepository;
+            _userRepository = userRepository;
             _newIdGeneratorService = newIdGeneratorService;
             _mapper = mapper;
         }
@@ -65,10 +69,20 @@ namespace FootScout_MongoDB.WebAPI.Controllers
             await _achievementsRepository.CreateAchievements(achievements);
 
             var clubHistory = _mapper.Map<ClubHistory>(dto);
-            clubHistory.AchievementsId = achievements.Id;
             clubHistory.Id = await _newIdGeneratorService.GenerateNewClubHistoryId();
-            await _clubHistoryRepository.CreateClubHistory(clubHistory);
+            clubHistory.Achievements = achievements;
+            clubHistory.AchievementsId = achievements.Id;
 
+            if (clubHistory.PlayerPositionId != 0)
+                clubHistory.PlayerPosition = await _playerPositionRepository.GetPlayerPosition(clubHistory.PlayerPositionId);
+
+            if (clubHistory.PlayerId is not null)
+            {
+                var player = await _userRepository.GetUser(clubHistory.PlayerId);
+                clubHistory.Player = _mapper.Map<User>(player);
+            }
+
+            await _clubHistoryRepository.CreateClubHistory(clubHistory);
             return Ok(clubHistory);
         }
 
@@ -81,6 +95,15 @@ namespace FootScout_MongoDB.WebAPI.Controllers
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
+
+            if (clubHistory.PlayerPositionId != 0)
+                clubHistory.PlayerPosition = await _playerPositionRepository.GetPlayerPosition(clubHistory.PlayerPositionId);
+
+            if (clubHistory.PlayerId is not null)
+            {
+                var player = await _userRepository.GetUser(clubHistory.PlayerId);
+                clubHistory.Player = _mapper.Map<User>(player);
+            }
 
             await _clubHistoryRepository.UpdateClubHistory(clubHistory);
             return NoContent();

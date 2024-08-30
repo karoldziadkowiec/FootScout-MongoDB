@@ -16,7 +16,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="HubManager\" />
     <Folder Include="Models\DTOs\" />
   </ItemGroup>
 

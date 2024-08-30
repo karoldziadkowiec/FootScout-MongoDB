@@ -17,145 +17,25 @@ namespace FootScout_MongoDB.WebAPI.Repositories.Classes
 
         public async Task<ClubOffer> GetClubOffer(int clubOfferId)
         {
-            var clubOffer = await _dbContext.ClubOffersCollection
+            return await _dbContext.ClubOffersCollection
                 .Find(co => co.Id == clubOfferId)
                 .FirstOrDefaultAsync();
-
-            if (clubOffer != null)
-            {
-                clubOffer.PlayerAdvertisement = await _dbContext.PlayerAdvertisementsCollection
-                    .Find(pa => pa.Id == clubOffer.PlayerAdvertisementId)
-                    .FirstOrDefaultAsync();
-
-                if (clubOffer.PlayerAdvertisement != null)
-                {
-                    clubOffer.PlayerAdvertisement.PlayerPosition = await _dbContext.PlayerPositionsCollection
-                        .Find(pp => pp.Id == clubOffer.PlayerAdvertisement.PlayerPositionId)
-                        .FirstOrDefaultAsync();
-
-                    clubOffer.PlayerAdvertisement.PlayerFoot = await _dbContext.PlayerFeetCollection
-                        .Find(pf => pf.Id == clubOffer.PlayerAdvertisement.PlayerFootId)
-                        .FirstOrDefaultAsync();
-
-                    clubOffer.PlayerAdvertisement.SalaryRange = await _dbContext.SalaryRangesCollection
-                        .Find(sr => sr.Id == clubOffer.PlayerAdvertisement.SalaryRangeId)
-                        .FirstOrDefaultAsync();
-
-                    clubOffer.PlayerAdvertisement.Player = await _dbContext.UsersCollection
-                        .Find(p => p.Id == clubOffer.PlayerAdvertisement.PlayerId)
-                        .FirstOrDefaultAsync();
-                }
-
-                clubOffer.OfferStatus = await _dbContext.OfferStatusesCollection
-                    .Find(os => os.Id == clubOffer.OfferStatusId)
-                    .FirstOrDefaultAsync();
-
-                clubOffer.PlayerPosition = await _dbContext.PlayerPositionsCollection
-                    .Find(pp => pp.Id == clubOffer.PlayerPositionId)
-                    .FirstOrDefaultAsync();
-
-                clubOffer.ClubMember = await _dbContext.UsersCollection
-                    .Find(cm => cm.Id == clubOffer.ClubMemberId)
-                    .FirstOrDefaultAsync();
-            }
-
-            return clubOffer;
         }
 
         public async Task<IEnumerable<ClubOffer>> GetClubOffers()
         {
-            var clubOffers = await _dbContext.ClubOffersCollection
+            return await _dbContext.ClubOffersCollection
                 .Find(_ => true)
                 .SortByDescending(co => co.CreationDate)
                 .ToListAsync();
-
-            foreach (var clubOffer in clubOffers)
-            {
-                clubOffer.PlayerAdvertisement = await _dbContext.PlayerAdvertisementsCollection
-                    .Find(pa => pa.Id == clubOffer.PlayerAdvertisementId)
-                    .FirstOrDefaultAsync();
-
-                if (clubOffer.PlayerAdvertisement != null)
-                {
-                    clubOffer.PlayerAdvertisement.PlayerPosition = await _dbContext.PlayerPositionsCollection
-                        .Find(pp => pp.Id == clubOffer.PlayerAdvertisement.PlayerPositionId)
-                        .FirstOrDefaultAsync();
-
-                    clubOffer.PlayerAdvertisement.PlayerFoot = await _dbContext.PlayerFeetCollection
-                        .Find(pf => pf.Id == clubOffer.PlayerAdvertisement.PlayerFootId)
-                        .FirstOrDefaultAsync();
-
-                    clubOffer.PlayerAdvertisement.SalaryRange = await _dbContext.SalaryRangesCollection
-                        .Find(sr => sr.Id == clubOffer.PlayerAdvertisement.SalaryRangeId)
-                        .FirstOrDefaultAsync();
-
-                    clubOffer.PlayerAdvertisement.Player = await _dbContext.UsersCollection
-                        .Find(p => p.Id == clubOffer.PlayerAdvertisement.PlayerId)
-                        .FirstOrDefaultAsync();
-                }
-
-                clubOffer.OfferStatus = await _dbContext.OfferStatusesCollection
-                    .Find(os => os.Id == clubOffer.OfferStatusId)
-                    .FirstOrDefaultAsync();
-
-                clubOffer.PlayerPosition = await _dbContext.PlayerPositionsCollection
-                    .Find(pp => pp.Id == clubOffer.PlayerPositionId)
-                    .FirstOrDefaultAsync();
-
-                clubOffer.ClubMember = await _dbContext.UsersCollection
-                    .Find(cm => cm.Id == clubOffer.ClubMemberId)
-                    .FirstOrDefaultAsync();
-            }
-
-            return clubOffers;
         }
 
         public async Task<IEnumerable<ClubOffer>> GetActiveClubOffers()
         {
-            var activeClubOffers = await _dbContext.ClubOffersCollection
+            return await _dbContext.ClubOffersCollection
                 .Find(co => co.PlayerAdvertisement.EndDate >= DateTime.Now)
                 .SortByDescending(co => co.CreationDate)
                 .ToListAsync();
-
-            foreach (var clubOffer in activeClubOffers)
-            {
-                clubOffer.PlayerAdvertisement = await _dbContext.PlayerAdvertisementsCollection
-                    .Find(pa => pa.Id == clubOffer.PlayerAdvertisementId)
-                    .FirstOrDefaultAsync();
-
-                if (clubOffer.PlayerAdvertisement != null)
-                {
-                    clubOffer.PlayerAdvertisement.PlayerPosition = await _dbContext.PlayerPositionsCollection
-                        .Find(pp => pp.Id == clubOffer.PlayerAdvertisement.PlayerPositionId)
-                        .FirstOrDefaultAsync();
-
-                    clubOffer.PlayerAdvertisement.PlayerFoot = await _dbContext.PlayerFeetCollection
-                        .Find(pf => pf.Id == clubOffer.PlayerAdvertisement.PlayerFootId)
-                        .FirstOrDefaultAsync();
-
-                    clubOffer.PlayerAdvertisement.SalaryRange = await _dbContext.SalaryRangesCollection
-                        .Find(sr => sr.Id == clubOffer.PlayerAdvertisement.SalaryRangeId)
-                        .FirstOrDefaultAsync();
-
-                    clubOffer.PlayerAdvertisement.Player = await _dbContext.UsersCollection
-                        .Find(p => p.Id == clubOffer.PlayerAdvertisement.PlayerId)
-                        .FirstOrDefaultAsync();
-                }
-
-                clubOffer.OfferStatus = await _dbContext.OfferStatusesCollection
-                    .Find(os => os.Id == clubOffer.OfferStatusId)
-                    .FirstOrDefaultAsync();
-
-                clubOffer.PlayerPosition = await _dbContext.PlayerPositionsCollection
-                    .Find(pp => pp.Id == clubOffer.PlayerPositionId)
-                    .FirstOrDefaultAsync();
-
-                clubOffer.ClubMember = await _dbContext.UsersCollection
-                    .Find(cm => cm.Id == clubOffer.ClubMemberId)
-                    .FirstOrDefaultAsync();
-            }
-
-            return activeClubOffers;
         }
 
         public async Task<int> GetActiveClubOfferCount()
@@ -166,50 +46,10 @@ namespace FootScout_MongoDB.WebAPI.Repositories.Classes
 
         public async Task<IEnumerable<ClubOffer>> GetInactiveClubOffers()
         {
-            var inactiveClubOffers = await _dbContext.ClubOffersCollection
+            return await _dbContext.ClubOffersCollection
                 .Find(co => co.PlayerAdvertisement.EndDate < DateTime.Now)
                 .SortByDescending(co => co.CreationDate)
                 .ToListAsync();
-
-            foreach (var clubOffer in inactiveClubOffers)
-            {
-                clubOffer.PlayerAdvertisement = await _dbContext.PlayerAdvertisementsCollection
-                    .Find(pa => pa.Id == clubOffer.PlayerAdvertisementId)
-                    .FirstOrDefaultAsync();
-
-                if (clubOffer.PlayerAdvertisement != null)
-                {
-                    clubOffer.PlayerAdvertisement.PlayerPosition = await _dbContext.PlayerPositionsCollection
-                        .Find(pp => pp.Id == clubOffer.PlayerAdvertisement.PlayerPositionId)
-                        .FirstOrDefaultAsync();
-
-                    clubOffer.PlayerAdvertisement.PlayerFoot = await _dbContext.PlayerFeetCollection
-                        .Find(pf => pf.Id == clubOffer.PlayerAdvertisement.PlayerFootId)
-                        .FirstOrDefaultAsync();
-
-                    clubOffer.PlayerAdvertisement.SalaryRange = await _dbContext.SalaryRangesCollection
-                        .Find(sr => sr.Id == clubOffer.PlayerAdvertisement.SalaryRangeId)
-                        .FirstOrDefaultAsync();
-
-                    clubOffer.PlayerAdvertisement.Player = await _dbContext.UsersCollection
-                        .Find(p => p.Id == clubOffer.PlayerAdvertisement.PlayerId)
-                        .FirstOrDefaultAsync();
-                }
-
-                clubOffer.OfferStatus = await _dbContext.OfferStatusesCollection
-                    .Find(os => os.Id == clubOffer.OfferStatusId)
-                    .FirstOrDefaultAsync();
-
-                clubOffer.PlayerPosition = await _dbContext.PlayerPositionsCollection
-                    .Find(pp => pp.Id == clubOffer.PlayerPositionId)
-                    .FirstOrDefaultAsync();
-
-                clubOffer.ClubMember = await _dbContext.UsersCollection
-                    .Find(cm => cm.Id == clubOffer.ClubMemberId)
-                    .FirstOrDefaultAsync();
-            }
-
-            return inactiveClubOffers;
         }
 
         public async Task CreateClubOffer(ClubOffer clubOffer)
@@ -233,24 +73,12 @@ namespace FootScout_MongoDB.WebAPI.Repositories.Classes
         {
             var clubOfferFilter = Builders<ClubOffer>.Filter.Eq(co => co.Id, clubOffer.Id);
             await _dbContext.ClubOffersCollection.ReplaceOneAsync(clubOfferFilter, clubOffer);
-
-            if (clubOffer.OfferStatus != null && clubOffer.OfferStatus.Id != 0)
-            {
-                var offerStatusFilter = Builders<OfferStatus>.Filter.Eq(os => os.Id, clubOffer.OfferStatus.Id);
-                await _dbContext.OfferStatusesCollection.ReplaceOneAsync(offerStatusFilter, clubOffer.OfferStatus);
-            }
-
-            if (clubOffer.PlayerPosition != null && clubOffer.PlayerPosition.Id != 0)
-            {
-                var playerPositionFilter = Builders<PlayerPosition>.Filter.Eq(pp => pp.Id, clubOffer.PlayerPosition.Id);
-                await _dbContext.PlayerPositionsCollection.ReplaceOneAsync(playerPositionFilter, clubOffer.PlayerPosition);
-            }
         }
 
         public async Task DeleteClubOffer(int clubOfferId)
         {
-            var filter = Builders<ClubOffer>.Filter.Eq(co => co.Id, clubOfferId);
-            await _dbContext.ClubOffersCollection.DeleteOneAsync(filter);
+            var clubOfferFilter = Builders<ClubOffer>.Filter.Eq(co => co.Id, clubOfferId);
+            await _dbContext.ClubOffersCollection.DeleteOneAsync(clubOfferFilter);
         }
 
         public async Task AcceptClubOffer(ClubOffer clubOffer)
@@ -262,12 +90,12 @@ namespace FootScout_MongoDB.WebAPI.Repositories.Classes
             if (acceptedStatus == null)
                 throw new Exception("Accepted status not found");
 
-            var filter = Builders<ClubOffer>.Filter.Eq(co => co.Id, clubOffer.Id);
-            var update = Builders<ClubOffer>.Update
+            var clubOfferFilter = Builders<ClubOffer>.Filter.Eq(co => co.Id, clubOffer.Id);
+            var updatedOffer = Builders<ClubOffer>.Update
                 .Set(co => co.OfferStatusId, acceptedStatus.Id)
                 .Set(co => co.OfferStatus, acceptedStatus);
 
-            await _dbContext.ClubOffersCollection.UpdateOneAsync(filter, update);
+            await _dbContext.ClubOffersCollection.UpdateOneAsync(clubOfferFilter, updatedOffer);
         }
 
         public async Task RejectClubOffer(ClubOffer clubOffer)

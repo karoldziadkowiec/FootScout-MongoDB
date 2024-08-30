@@ -4,7 +4,6 @@ using FootScout_MongoDB.WebAPI.Entities;
 using FootScout_MongoDB.WebAPI.Models.DTOs;
 using FootScout_MongoDB.WebAPI.Services.Interfaces;
 using MongoDB.Driver;
-using System;
 using System.Text;
 
 namespace FootScout_MongoDB.WebAPI.Services.Classes
@@ -287,863 +286,139 @@ namespace FootScout_MongoDB.WebAPI.Services.Classes
 
         public async Task<IEnumerable<ClubHistory>> GetUserClubHistory(string userId)
         {
-            var clubHistories = await _dbContext.ClubHistoriesCollection
+            return await _dbContext.ClubHistoriesCollection
                 .Find(ch => ch.PlayerId == userId)
                 .SortByDescending(ch => ch.StartDate)
                 .ThenByDescending(ch => ch.EndDate)
                 .ToListAsync();
-
-            foreach (var clubHistory in clubHistories)
-            {
-                if (clubHistory.AchievementsId != null)
-                {
-                    clubHistory.Achievements = await _dbContext.AchievementsCollection
-                        .Find(a => a.Id == clubHistory.AchievementsId)
-                        .FirstOrDefaultAsync();
-                }
-
-                if (clubHistory.PlayerPositionId != null)
-                {
-                    clubHistory.PlayerPosition = await _dbContext.PlayerPositionsCollection
-                        .Find(pp => pp.Id == clubHistory.PlayerPositionId)
-                        .FirstOrDefaultAsync();
-                }
-
-                if (clubHistory.PlayerId != null)
-                {
-                    clubHistory.Player = await _dbContext.UsersCollection
-                        .Find(u => u.Id == clubHistory.PlayerId)
-                        .FirstOrDefaultAsync();
-                }
-            }
-
-            return clubHistories;
         }
         
         public async Task<IEnumerable<PlayerAdvertisement>> GetUserPlayerAdvertisements(string userId)
         {
-            var playerAdvertisements = await _dbContext.PlayerAdvertisementsCollection
+            return await _dbContext.PlayerAdvertisementsCollection
                 .Find(pa => pa.PlayerId == userId)
                 .SortByDescending(pa => pa.EndDate)
                 .ToListAsync();
-
-            foreach (var advertisement in playerAdvertisements)
-            {
-                if (advertisement.PlayerPositionId != null)
-                {
-                    advertisement.PlayerPosition = await _dbContext.PlayerPositionsCollection
-                        .Find(pp => pp.Id == advertisement.PlayerPositionId)
-                        .FirstOrDefaultAsync();
-                }
-
-                if (advertisement.PlayerFootId != null)
-                {
-                    advertisement.PlayerFoot = await _dbContext.PlayerFeetCollection
-                        .Find(pf => pf.Id == advertisement.PlayerFootId)
-                        .FirstOrDefaultAsync();
-                }
-
-                if (advertisement.SalaryRangeId != null)
-                {
-                    advertisement.SalaryRange = await _dbContext.SalaryRangesCollection
-                        .Find(sr => sr.Id == advertisement.SalaryRangeId)
-                        .FirstOrDefaultAsync();
-                }
-
-                if (advertisement.PlayerId != null)
-                {
-                    advertisement.Player = await _dbContext.UsersCollection
-                        .Find(u => u.Id == advertisement.PlayerId)
-                        .FirstOrDefaultAsync();
-                }
-            }
-
-            return playerAdvertisements;
         }
 
         public async Task<IEnumerable<PlayerAdvertisement>> GetUserActivePlayerAdvertisements(string userId)
         {
-            var activeAdvertisements = await _dbContext.PlayerAdvertisementsCollection
+            return await _dbContext.PlayerAdvertisementsCollection
                 .Find(pa => pa.PlayerId == userId && pa.EndDate >= DateTime.Now)
                 .SortBy(pa => pa.EndDate)
                 .ToListAsync();
-
-            foreach (var advertisement in activeAdvertisements)
-            {
-                if (advertisement.PlayerPositionId != null)
-                {
-                    advertisement.PlayerPosition = await _dbContext.PlayerPositionsCollection
-                        .Find(pp => pp.Id == advertisement.PlayerPositionId)
-                        .FirstOrDefaultAsync();
-                }
-
-                if (advertisement.PlayerFootId != null)
-                {
-                    advertisement.PlayerFoot = await _dbContext.PlayerFeetCollection
-                        .Find(pf => pf.Id == advertisement.PlayerFootId)
-                        .FirstOrDefaultAsync();
-                }
-
-                if (advertisement.SalaryRangeId != null)
-                {
-                    advertisement.SalaryRange = await _dbContext.SalaryRangesCollection
-                        .Find(sr => sr.Id == advertisement.SalaryRangeId)
-                        .FirstOrDefaultAsync();
-                }
-
-                if (advertisement.PlayerId != null)
-                {
-                    advertisement.Player = await _dbContext.UsersCollection
-                        .Find(u => u.Id == advertisement.PlayerId)
-                        .FirstOrDefaultAsync();
-                }
-            }
-
-            return activeAdvertisements;
         }
 
         public async Task<IEnumerable<PlayerAdvertisement>> GetUserInactivePlayerAdvertisements(string userId)
         {
-            var inactiveAdvertisements = await _dbContext.PlayerAdvertisementsCollection
+            return await _dbContext.PlayerAdvertisementsCollection
                 .Find(pa => pa.PlayerId == userId && pa.EndDate < DateTime.Now)
                 .SortByDescending(pa => pa.EndDate)
                 .ToListAsync();
-
-            foreach (var advertisement in inactiveAdvertisements)
-            {
-                if (advertisement.PlayerPositionId != null)
-                {
-                    advertisement.PlayerPosition = await _dbContext.PlayerPositionsCollection
-                        .Find(pp => pp.Id == advertisement.PlayerPositionId)
-                        .FirstOrDefaultAsync();
-                }
-
-                if (advertisement.PlayerFootId != null)
-                {
-                    advertisement.PlayerFoot = await _dbContext.PlayerFeetCollection
-                        .Find(pf => pf.Id == advertisement.PlayerFootId)
-                        .FirstOrDefaultAsync();
-                }
-
-                if (advertisement.SalaryRangeId != null)
-                {
-                    advertisement.SalaryRange = await _dbContext.SalaryRangesCollection
-                        .Find(sr => sr.Id == advertisement.SalaryRangeId)
-                        .FirstOrDefaultAsync();
-                }
-
-                if (advertisement.PlayerId != null)
-                {
-                    advertisement.Player = await _dbContext.UsersCollection
-                        .Find(u => u.Id == advertisement.PlayerId)
-                        .FirstOrDefaultAsync();
-                }
-            }
-
-            return inactiveAdvertisements;
         }
 
         public async Task<IEnumerable<FavoritePlayerAdvertisement>> GetUserFavoritePlayerAdvertisements(string userId)
         {
-            var favoriteAdvertisements = await _dbContext.FavoritePlayerAdvertisementsCollection
+            return await _dbContext.FavoritePlayerAdvertisementsCollection
                 .Find(pa => pa.UserId == userId)
                 .SortByDescending(pa => pa.PlayerAdvertisement.EndDate)
                 .ToListAsync();
-
-            foreach (var favorite in favoriteAdvertisements)
-            {
-                if (favorite.PlayerAdvertisementId != null)
-                {
-                    favorite.PlayerAdvertisement = await _dbContext.PlayerAdvertisementsCollection
-                        .Find(pa => pa.Id == favorite.PlayerAdvertisementId)
-                        .FirstOrDefaultAsync();
-
-                    if (favorite.PlayerAdvertisement.PlayerPositionId != null)
-                    {
-                        favorite.PlayerAdvertisement.PlayerPosition = await _dbContext.PlayerPositionsCollection
-                            .Find(pp => pp.Id == favorite.PlayerAdvertisement.PlayerPositionId)
-                            .FirstOrDefaultAsync();
-                    }
-
-                    if (favorite.PlayerAdvertisement.PlayerFootId != null)
-                    {
-                        favorite.PlayerAdvertisement.PlayerFoot = await _dbContext.PlayerFeetCollection
-                            .Find(pf => pf.Id == favorite.PlayerAdvertisement.PlayerFootId)
-                            .FirstOrDefaultAsync();
-                    }
-
-                    if (favorite.PlayerAdvertisement.SalaryRangeId != null)
-                    {
-                        favorite.PlayerAdvertisement.SalaryRange = await _dbContext.SalaryRangesCollection
-                            .Find(sr => sr.Id == favorite.PlayerAdvertisement.SalaryRangeId)
-                            .FirstOrDefaultAsync();
-                    }
-
-                    if (favorite.PlayerAdvertisement.PlayerId != null)
-                    {
-                        favorite.PlayerAdvertisement.Player = await _dbContext.UsersCollection
-                            .Find(u => u.Id == favorite.PlayerAdvertisement.PlayerId)
-                            .FirstOrDefaultAsync();
-                    }
-                }
-
-                if (favorite.UserId != null)
-                {
-                    favorite.User = await _dbContext.UsersCollection
-                        .Find(u => u.Id == favorite.UserId)
-                        .FirstOrDefaultAsync();
-                }
-            }
-
-            return favoriteAdvertisements;
         }
 
         public async Task<IEnumerable<FavoritePlayerAdvertisement>> GetUserActiveFavoritePlayerAdvertisements(string userId)
         {
-            var activeFavorites = await _dbContext.FavoritePlayerAdvertisementsCollection
+            return await _dbContext.FavoritePlayerAdvertisementsCollection
                 .Find(pa => pa.UserId == userId && pa.PlayerAdvertisement.EndDate >= DateTime.Now)
                 .SortBy(pa => pa.PlayerAdvertisement.EndDate)
                 .ToListAsync();
-
-            foreach (var favorite in activeFavorites)
-            {
-                if (favorite.PlayerAdvertisementId != null)
-                {
-                    favorite.PlayerAdvertisement = await _dbContext.PlayerAdvertisementsCollection
-                        .Find(pa => pa.Id == favorite.PlayerAdvertisementId)
-                        .FirstOrDefaultAsync();
-
-                    if (favorite.PlayerAdvertisement.PlayerPositionId != null)
-                    {
-                        favorite.PlayerAdvertisement.PlayerPosition = await _dbContext.PlayerPositionsCollection
-                            .Find(pp => pp.Id == favorite.PlayerAdvertisement.PlayerPositionId)
-                            .FirstOrDefaultAsync();
-                    }
-
-                    if (favorite.PlayerAdvertisement.PlayerFootId != null)
-                    {
-                        favorite.PlayerAdvertisement.PlayerFoot = await _dbContext.PlayerFeetCollection
-                            .Find(pf => pf.Id == favorite.PlayerAdvertisement.PlayerFootId)
-                            .FirstOrDefaultAsync();
-                    }
-
-                    if (favorite.PlayerAdvertisement.SalaryRangeId != null)
-                    {
-                        favorite.PlayerAdvertisement.SalaryRange = await _dbContext.SalaryRangesCollection
-                            .Find(sr => sr.Id == favorite.PlayerAdvertisement.SalaryRangeId)
-                            .FirstOrDefaultAsync();
-                    }
-
-                    if (favorite.PlayerAdvertisement.PlayerId != null)
-                    {
-                        favorite.PlayerAdvertisement.Player = await _dbContext.UsersCollection
-                            .Find(u => u.Id == favorite.PlayerAdvertisement.PlayerId)
-                            .FirstOrDefaultAsync();
-                    }
-                }
-
-                if (favorite.UserId != null)
-                {
-                    favorite.User = await _dbContext.UsersCollection
-                        .Find(u => u.Id == favorite.UserId)
-                        .FirstOrDefaultAsync();
-                }
-            }
-
-            return activeFavorites;
         }
 
         public async Task<IEnumerable<FavoritePlayerAdvertisement>> GetUserInactiveFavoritePlayerAdvertisements(string userId)
         {
-            var inactiveFavorites = await _dbContext.FavoritePlayerAdvertisementsCollection
+            return await _dbContext.FavoritePlayerAdvertisementsCollection
                 .Find(pa => pa.UserId == userId && pa.PlayerAdvertisement.EndDate < DateTime.Now)
                 .SortByDescending(pa => pa.PlayerAdvertisement.EndDate)
                 .ToListAsync();
-
-            foreach (var favorite in inactiveFavorites)
-            {
-                if (favorite.PlayerAdvertisementId != null)
-                {
-                    favorite.PlayerAdvertisement = await _dbContext.PlayerAdvertisementsCollection
-                        .Find(pa => pa.Id == favorite.PlayerAdvertisementId)
-                        .FirstOrDefaultAsync();
-
-                    if (favorite.PlayerAdvertisement.PlayerPositionId != null)
-                    {
-                        favorite.PlayerAdvertisement.PlayerPosition = await _dbContext.PlayerPositionsCollection
-                            .Find(pp => pp.Id == favorite.PlayerAdvertisement.PlayerPositionId)
-                            .FirstOrDefaultAsync();
-                    }
-
-                    if (favorite.PlayerAdvertisement.PlayerFootId != null)
-                    {
-                        favorite.PlayerAdvertisement.PlayerFoot = await _dbContext.PlayerFeetCollection
-                            .Find(pf => pf.Id == favorite.PlayerAdvertisement.PlayerFootId)
-                            .FirstOrDefaultAsync();
-                    }
-
-                    if (favorite.PlayerAdvertisement.SalaryRangeId != null)
-                    {
-                        favorite.PlayerAdvertisement.SalaryRange = await _dbContext.SalaryRangesCollection
-                            .Find(sr => sr.Id == favorite.PlayerAdvertisement.SalaryRangeId)
-                            .FirstOrDefaultAsync();
-                    }
-
-                    if (favorite.PlayerAdvertisement.PlayerId != null)
-                    {
-                        favorite.PlayerAdvertisement.Player = await _dbContext.UsersCollection
-                            .Find(u => u.Id == favorite.PlayerAdvertisement.PlayerId)
-                            .FirstOrDefaultAsync();
-                    }
-                }
-
-                if (favorite.UserId != null)
-                {
-                    favorite.User = await _dbContext.UsersCollection
-                        .Find(u => u.Id == favorite.UserId)
-                        .FirstOrDefaultAsync();
-                }
-            }
-
-            return inactiveFavorites;
         }
 
         public async Task<IEnumerable<ClubOffer>> GetReceivedClubOffers(string userId)
         {
-            var receivedOffers = await _dbContext.ClubOffersCollection
+            return await _dbContext.ClubOffersCollection
                 .Find(co => co.PlayerAdvertisement.PlayerId == userId)
                 .SortByDescending(co => co.PlayerAdvertisement.EndDate)
                 .ToListAsync();
-
-            foreach (var offer in receivedOffers)
-            {
-                if (offer.PlayerAdvertisementId != null)
-                {
-                    offer.PlayerAdvertisement = await _dbContext.PlayerAdvertisementsCollection
-                        .Find(pa => pa.Id == offer.PlayerAdvertisementId)
-                        .FirstOrDefaultAsync();
-
-                    if (offer.PlayerAdvertisement != null)
-                    {
-                        if (offer.PlayerAdvertisement.PlayerPositionId != null)
-                        {
-                            offer.PlayerAdvertisement.PlayerPosition = await _dbContext.PlayerPositionsCollection
-                                .Find(pp => pp.Id == offer.PlayerAdvertisement.PlayerPositionId)
-                                .FirstOrDefaultAsync();
-                        }
-
-                        if (offer.PlayerAdvertisement.PlayerFootId != null)
-                        {
-                            offer.PlayerAdvertisement.PlayerFoot = await _dbContext.PlayerFeetCollection
-                                .Find(pf => pf.Id == offer.PlayerAdvertisement.PlayerFootId)
-                                .FirstOrDefaultAsync();
-                        }
-
-                        if (offer.PlayerAdvertisement.SalaryRangeId != null)
-                        {
-                            offer.PlayerAdvertisement.SalaryRange = await _dbContext.SalaryRangesCollection
-                                .Find(sr => sr.Id == offer.PlayerAdvertisement.SalaryRangeId)
-                                .FirstOrDefaultAsync();
-                        }
-
-                        if (offer.PlayerAdvertisement.PlayerId != null)
-                        {
-                            offer.PlayerAdvertisement.Player = await _dbContext.UsersCollection
-                                .Find(u => u.Id == offer.PlayerAdvertisement.PlayerId)
-                                .FirstOrDefaultAsync();
-                        }
-                    }
-                }
-
-                if (offer.OfferStatusId != null)
-                {
-                    offer.OfferStatus = await _dbContext.OfferStatusesCollection
-                        .Find(os => os.Id == offer.OfferStatusId)
-                        .FirstOrDefaultAsync();
-                }
-
-                if (offer.PlayerPositionId != null)
-                {
-                    offer.PlayerPosition = await _dbContext.PlayerPositionsCollection
-                        .Find(pp => pp.Id == offer.PlayerPositionId)
-                        .FirstOrDefaultAsync();
-                }
-
-                if (offer.ClubMemberId != null)
-                {
-                    offer.ClubMember = await _dbContext.UsersCollection
-                        .Find(u => u.Id == offer.ClubMemberId)
-                        .FirstOrDefaultAsync();
-                }
-            }
-
-            return receivedOffers;
         }
 
         public async Task<IEnumerable<ClubOffer>> GetSentClubOffers(string userId)
         {
-            var sentOffers = await _dbContext.ClubOffersCollection
+            return await _dbContext.ClubOffersCollection
                 .Find(co => co.ClubMemberId == userId)
                 .SortByDescending(co => co.PlayerAdvertisement.CreationDate)
                 .ToListAsync();
-
-            foreach (var offer in sentOffers)
-            {
-                if (offer.PlayerAdvertisementId != null)
-                {
-                    offer.PlayerAdvertisement = await _dbContext.PlayerAdvertisementsCollection
-                        .Find(pa => pa.Id == offer.PlayerAdvertisementId)
-                        .FirstOrDefaultAsync();
-
-                    if (offer.PlayerAdvertisement != null)
-                    {
-                        if (offer.PlayerAdvertisement.PlayerPositionId != null)
-                        {
-                            offer.PlayerAdvertisement.PlayerPosition = await _dbContext.PlayerPositionsCollection
-                                .Find(pp => pp.Id == offer.PlayerAdvertisement.PlayerPositionId)
-                                .FirstOrDefaultAsync();
-                        }
-
-                        if (offer.PlayerAdvertisement.PlayerFootId != null)
-                        {
-                            offer.PlayerAdvertisement.PlayerFoot = await _dbContext.PlayerFeetCollection
-                                .Find(pf => pf.Id == offer.PlayerAdvertisement.PlayerFootId)
-                                .FirstOrDefaultAsync();
-                        }
-
-                        if (offer.PlayerAdvertisement.SalaryRangeId != null)
-                        {
-                            offer.PlayerAdvertisement.SalaryRange = await _dbContext.SalaryRangesCollection
-                                .Find(sr => sr.Id == offer.PlayerAdvertisement.SalaryRangeId)
-                                .FirstOrDefaultAsync();
-                        }
-
-                        if (offer.PlayerAdvertisement.PlayerId != null)
-                        {
-                            offer.PlayerAdvertisement.Player = await _dbContext.UsersCollection
-                                .Find(u => u.Id == offer.PlayerAdvertisement.PlayerId)
-                                .FirstOrDefaultAsync();
-                        }
-                    }
-                }
-
-                if (offer.OfferStatusId != null)
-                {
-                    offer.OfferStatus = await _dbContext.OfferStatusesCollection
-                        .Find(os => os.Id == offer.OfferStatusId)
-                        .FirstOrDefaultAsync();
-                }
-
-                if (offer.PlayerPositionId != null)
-                {
-                    offer.PlayerPosition = await _dbContext.PlayerPositionsCollection
-                        .Find(pp => pp.Id == offer.PlayerPositionId)
-                        .FirstOrDefaultAsync();
-                }
-
-                if (offer.ClubMemberId != null)
-                {
-                    offer.ClubMember = await _dbContext.UsersCollection
-                        .Find(u => u.Id == offer.ClubMemberId)
-                        .FirstOrDefaultAsync();
-                }
-            }
-
-            return sentOffers;
         }
 
         public async Task<IEnumerable<ClubAdvertisement>> GetUserClubAdvertisements(string userId)
         {
-            var clubAdvertisements = await _dbContext.ClubAdvertisementsCollection
+            return await _dbContext.ClubAdvertisementsCollection
                 .Find(ca => ca.ClubMemberId == userId)
                 .SortByDescending(ca => ca.EndDate)
                 .ToListAsync();
-
-            foreach (var advertisement in clubAdvertisements)
-            {
-                if (advertisement.PlayerPositionId != null)
-                {
-                    advertisement.PlayerPosition = await _dbContext.PlayerPositionsCollection
-                        .Find(pp => pp.Id == advertisement.PlayerPositionId)
-                        .FirstOrDefaultAsync();
-                }
-
-                if (advertisement.SalaryRangeId != null)
-                {
-                    advertisement.SalaryRange = await _dbContext.SalaryRangesCollection
-                        .Find(sr => sr.Id == advertisement.SalaryRangeId)
-                        .FirstOrDefaultAsync();
-                }
-
-                if (advertisement.ClubMemberId != null)
-                {
-                    advertisement.ClubMember = await _dbContext.UsersCollection
-                        .Find(u => u.Id == advertisement.ClubMemberId)
-                        .FirstOrDefaultAsync();
-                }
-            }
-
-            return clubAdvertisements;
         }
 
         public async Task<IEnumerable<ClubAdvertisement>> GetUserActiveClubAdvertisements(string userId)
         {
-            var activeAdvertisements = await _dbContext.ClubAdvertisementsCollection
+            return await _dbContext.ClubAdvertisementsCollection
                 .Find(ca => ca.ClubMemberId == userId && ca.EndDate >= DateTime.Now)
                 .SortBy(ca => ca.EndDate)
                 .ToListAsync();
-
-            foreach (var advertisement in activeAdvertisements)
-            {
-                if (advertisement.PlayerPositionId != null)
-                {
-                    advertisement.PlayerPosition = await _dbContext.PlayerPositionsCollection
-                        .Find(pp => pp.Id == advertisement.PlayerPositionId)
-                        .FirstOrDefaultAsync();
-                }
-
-                if (advertisement.SalaryRangeId != null)
-                {
-                    advertisement.SalaryRange = await _dbContext.SalaryRangesCollection
-                        .Find(sr => sr.Id == advertisement.SalaryRangeId)
-                        .FirstOrDefaultAsync();
-                }
-
-                if (advertisement.ClubMemberId != null)
-                {
-                    advertisement.ClubMember = await _dbContext.UsersCollection
-                        .Find(u => u.Id == advertisement.ClubMemberId)
-                        .FirstOrDefaultAsync();
-                }
-            }
-
-            return activeAdvertisements;
         }
 
         public async Task<IEnumerable<ClubAdvertisement>> GetUserInactiveClubAdvertisements(string userId)
         {
-            var inactiveAdvertisements = await _dbContext.ClubAdvertisementsCollection
+            return await _dbContext.ClubAdvertisementsCollection
                 .Find(ca => ca.ClubMemberId == userId && ca.EndDate < DateTime.Now)
                 .SortByDescending(ca => ca.EndDate)
                 .ToListAsync();
-
-            foreach (var advertisement in inactiveAdvertisements)
-            {
-                if (advertisement.PlayerPositionId != null)
-                {
-                    advertisement.PlayerPosition = await _dbContext.PlayerPositionsCollection
-                        .Find(pp => pp.Id == advertisement.PlayerPositionId)
-                        .FirstOrDefaultAsync();
-                }
-
-                if (advertisement.SalaryRangeId != null)
-                {
-                    advertisement.SalaryRange = await _dbContext.SalaryRangesCollection
-                        .Find(sr => sr.Id == advertisement.SalaryRangeId)
-                        .FirstOrDefaultAsync();
-                }
-
-                if (advertisement.ClubMemberId != null)
-                {
-                    advertisement.ClubMember = await _dbContext.UsersCollection
-                        .Find(u => u.Id == advertisement.ClubMemberId)
-                        .FirstOrDefaultAsync();
-                }
-            }
-
-            return inactiveAdvertisements;
         }
 
         public async Task<IEnumerable<FavoriteClubAdvertisement>> GetUserFavoriteClubAdvertisements(string userId)
         {
-            var favoriteAdvertisements = await _dbContext.FavoriteClubAdvertisementsCollection
+            return await _dbContext.FavoriteClubAdvertisementsCollection
                 .Find(fca => fca.UserId == userId)
+                .SortByDescending(ca => ca.ClubAdvertisement.EndDate)
                 .ToListAsync();
-
-            foreach (var favorite in favoriteAdvertisements)
-            {
-                if (favorite.ClubAdvertisementId != null)
-                {
-                    favorite.ClubAdvertisement = await _dbContext.ClubAdvertisementsCollection
-                        .Find(ca => ca.Id == favorite.ClubAdvertisementId)
-                        .FirstOrDefaultAsync();
-
-                    if (favorite.ClubAdvertisement != null)
-                    {
-                        if (favorite.ClubAdvertisement.PlayerPositionId != null)
-                        {
-                            favorite.ClubAdvertisement.PlayerPosition = await _dbContext.PlayerPositionsCollection
-                                .Find(pp => pp.Id == favorite.ClubAdvertisement.PlayerPositionId)
-                                .FirstOrDefaultAsync();
-                        }
-
-                        if (favorite.ClubAdvertisement.SalaryRangeId != null)
-                        {
-                            favorite.ClubAdvertisement.SalaryRange = await _dbContext.SalaryRangesCollection
-                                .Find(sr => sr.Id == favorite.ClubAdvertisement.SalaryRangeId)
-                                .FirstOrDefaultAsync();
-                        }
-
-                        if (favorite.ClubAdvertisement.ClubMemberId != null)
-                        {
-                            favorite.ClubAdvertisement.ClubMember = await _dbContext.UsersCollection
-                                .Find(u => u.Id == favorite.ClubAdvertisement.ClubMemberId)
-                                .FirstOrDefaultAsync();
-                        }
-                    }
-                }
-
-                if (favorite.UserId != null)
-                {
-                    favorite.User = await _dbContext.UsersCollection
-                        .Find(u => u.Id == favorite.UserId)
-                        .FirstOrDefaultAsync();
-                }
-            }
-
-            return favoriteAdvertisements.OrderByDescending(fca => fca.ClubAdvertisement.EndDate);
         }
 
         public async Task<IEnumerable<FavoriteClubAdvertisement>> GetUserActiveFavoriteClubAdvertisements(string userId)
         {
-            var favorites = await _dbContext.FavoriteClubAdvertisementsCollection
-                .Find(fc => fc.UserId == userId)
+            return await _dbContext.FavoriteClubAdvertisementsCollection
+                .Find(fc => fc.UserId == userId && fc.ClubAdvertisement.EndDate >= DateTime.Now)
+                .SortByDescending(ca => ca.ClubAdvertisement.EndDate)
                 .ToListAsync();
-
-            foreach (var favorite in favorites)
-            {
-                if (favorite.ClubAdvertisementId != null)
-                {
-                    favorite.ClubAdvertisement = await _dbContext.ClubAdvertisementsCollection
-                        .Find(ca => ca.Id == favorite.ClubAdvertisementId && ca.EndDate >= DateTime.Now)
-                        .FirstOrDefaultAsync();
-
-                    if (favorite.ClubAdvertisement != null)
-                    {
-                        if (favorite.ClubAdvertisement.PlayerPositionId != null)
-                        {
-                            favorite.ClubAdvertisement.PlayerPosition = await _dbContext.PlayerPositionsCollection
-                                .Find(pp => pp.Id == favorite.ClubAdvertisement.PlayerPositionId)
-                                .FirstOrDefaultAsync();
-                        }
-
-                        if (favorite.ClubAdvertisement.SalaryRangeId != null)
-                        {
-                            favorite.ClubAdvertisement.SalaryRange = await _dbContext.SalaryRangesCollection
-                                .Find(sr => sr.Id == favorite.ClubAdvertisement.SalaryRangeId)
-                                .FirstOrDefaultAsync();
-                        }
-
-                        if (favorite.ClubAdvertisement.ClubMemberId != null)
-                        {
-                            favorite.ClubAdvertisement.ClubMember = await _dbContext.UsersCollection
-                                .Find(u => u.Id == favorite.ClubAdvertisement.ClubMemberId)
-                                .FirstOrDefaultAsync();
-                        }
-                    }
-                }
-
-                if (favorite.UserId != null)
-                {
-                    favorite.User = await _dbContext.UsersCollection
-                        .Find(u => u.Id == favorite.UserId)
-                        .FirstOrDefaultAsync();
-                }
-            }
-
-            return favorites.OrderBy(fc => fc.ClubAdvertisement.EndDate);
         }
 
         public async Task<IEnumerable<FavoriteClubAdvertisement>> GetUserInactiveFavoriteClubAdvertisements(string userId)
         {
-            var favorites = await _dbContext.FavoriteClubAdvertisementsCollection
-                .Find(fc => fc.UserId == userId)
+            return await _dbContext.FavoriteClubAdvertisementsCollection
+                .Find(fc => fc.UserId == userId && fc.ClubAdvertisement.EndDate < DateTime.Now)
+                .SortByDescending(ca => ca.ClubAdvertisement.EndDate)
                 .ToListAsync();
-
-            foreach (var favorite in favorites)
-            {
-                if (favorite.ClubAdvertisementId != null)
-                {
-                    favorite.ClubAdvertisement = await _dbContext.ClubAdvertisementsCollection
-                        .Find(ca => ca.Id == favorite.ClubAdvertisementId && ca.EndDate < DateTime.Now)
-                        .FirstOrDefaultAsync();
-
-                    if (favorite.ClubAdvertisement != null)
-                    {
-                        if (favorite.ClubAdvertisement.PlayerPositionId != null)
-                        {
-                            favorite.ClubAdvertisement.PlayerPosition = await _dbContext.PlayerPositionsCollection
-                                .Find(pp => pp.Id == favorite.ClubAdvertisement.PlayerPositionId)
-                                .FirstOrDefaultAsync();
-                        }
-
-                        if (favorite.ClubAdvertisement.SalaryRangeId != null)
-                        {
-                            favorite.ClubAdvertisement.SalaryRange = await _dbContext.SalaryRangesCollection
-                                .Find(sr => sr.Id == favorite.ClubAdvertisement.SalaryRangeId)
-                                .FirstOrDefaultAsync();
-                        }
-
-                        if (favorite.ClubAdvertisement.ClubMemberId != null)
-                        {
-                            favorite.ClubAdvertisement.ClubMember = await _dbContext.UsersCollection
-                                .Find(u => u.Id == favorite.ClubAdvertisement.ClubMemberId)
-                                .FirstOrDefaultAsync();
-                        }
-                    }
-                }
-
-                if (favorite.UserId != null)
-                {
-                    favorite.User = await _dbContext.UsersCollection
-                        .Find(u => u.Id == favorite.UserId)
-                        .FirstOrDefaultAsync();
-                }
-            }
-
-            return favorites.OrderByDescending(fc => fc.ClubAdvertisement.EndDate);
         }
 
         public async Task<IEnumerable<PlayerOffer>> GetReceivedPlayerOffers(string userId)
         {
-            var offers = await _dbContext.PlayerOffersCollection
+            return await _dbContext.PlayerOffersCollection
                 .Find(po => po.ClubAdvertisement.ClubMemberId == userId)
+                .SortByDescending(ca => ca.ClubAdvertisement.EndDate)
                 .ToListAsync();
-
-            foreach (var offer in offers)
-            {
-                if (offer.ClubAdvertisementId != null)
-                {
-                    offer.ClubAdvertisement = await _dbContext.ClubAdvertisementsCollection
-                        .Find(ca => ca.Id == offer.ClubAdvertisementId)
-                        .FirstOrDefaultAsync();
-
-                    if (offer.ClubAdvertisement != null)
-                    {
-                        if (offer.ClubAdvertisement.PlayerPositionId != null)
-                        {
-                            offer.ClubAdvertisement.PlayerPosition = await _dbContext.PlayerPositionsCollection
-                                .Find(pp => pp.Id == offer.ClubAdvertisement.PlayerPositionId)
-                                .FirstOrDefaultAsync();
-                        }
-
-                        if (offer.ClubAdvertisement.SalaryRangeId != null)
-                        {
-                            offer.ClubAdvertisement.SalaryRange = await _dbContext.SalaryRangesCollection
-                                .Find(sr => sr.Id == offer.ClubAdvertisement.SalaryRangeId)
-                                .FirstOrDefaultAsync();
-                        }
-
-                        if (offer.ClubAdvertisement.ClubMemberId != null)
-                        {
-                            offer.ClubAdvertisement.ClubMember = await _dbContext.UsersCollection
-                                .Find(u => u.Id == offer.ClubAdvertisement.ClubMemberId)
-                                .FirstOrDefaultAsync();
-                        }
-                    }
-                }
-
-                if (offer.OfferStatusId != null)
-                {
-                    offer.OfferStatus = await _dbContext.OfferStatusesCollection
-                        .Find(os => os.Id == offer.OfferStatusId)
-                        .FirstOrDefaultAsync();
-                }
-
-                if (offer.PlayerPositionId != null)
-                {
-                    offer.PlayerPosition = await _dbContext.PlayerPositionsCollection
-                        .Find(pp => pp.Id == offer.PlayerPositionId)
-                        .FirstOrDefaultAsync();
-                }
-
-                if (offer.PlayerFootId != null)
-                {
-                    offer.PlayerFoot = await _dbContext.PlayerFeetCollection
-                        .Find(pf => pf.Id == offer.PlayerFootId)
-                        .FirstOrDefaultAsync();
-                }
-
-                if (offer.PlayerId != null)
-                {
-                    offer.Player = await _dbContext.UsersCollection
-                        .Find(u => u.Id == offer.PlayerId)
-                        .FirstOrDefaultAsync();
-                }
-            }
-
-            return offers.OrderByDescending(po => po.ClubAdvertisement.EndDate);
         }
 
         public async Task<IEnumerable<PlayerOffer>> GetSentPlayerOffers(string userId)
         {
-            var offers = await _dbContext.PlayerOffersCollection
+            return await _dbContext.PlayerOffersCollection
                 .Find(po => po.PlayerId == userId)
+                .SortByDescending(ca => ca.ClubAdvertisement.EndDate)
                 .ToListAsync();
-
-            foreach (var offer in offers)
-            {
-                if (offer.ClubAdvertisementId != null)
-                {
-                    offer.ClubAdvertisement = await _dbContext.ClubAdvertisementsCollection
-                        .Find(ca => ca.Id == offer.ClubAdvertisementId)
-                        .FirstOrDefaultAsync();
-
-                    if (offer.ClubAdvertisement != null)
-                    {
-                        if (offer.ClubAdvertisement.PlayerPositionId != null)
-                        {
-                            offer.ClubAdvertisement.PlayerPosition = await _dbContext.PlayerPositionsCollection
-                                .Find(pp => pp.Id == offer.ClubAdvertisement.PlayerPositionId)
-                                .FirstOrDefaultAsync();
-                        }
-
-                        if (offer.ClubAdvertisement.SalaryRangeId != null)
-                        {
-                            offer.ClubAdvertisement.SalaryRange = await _dbContext.SalaryRangesCollection
-                                .Find(sr => sr.Id == offer.ClubAdvertisement.SalaryRangeId)
-                                .FirstOrDefaultAsync();
-                        }
-
-                        if (offer.ClubAdvertisement.ClubMemberId != null)
-                        {
-                            offer.ClubAdvertisement.ClubMember = await _dbContext.UsersCollection
-                                .Find(u => u.Id == offer.ClubAdvertisement.ClubMemberId)
-                                .FirstOrDefaultAsync();
-                        }
-                    }
-                }
-
-                if (offer.OfferStatusId != null)
-                {
-                    offer.OfferStatus = await _dbContext.OfferStatusesCollection
-                        .Find(os => os.Id == offer.OfferStatusId)
-                        .FirstOrDefaultAsync();
-                }
-
-                if (offer.PlayerPositionId != null)
-                {
-                    offer.PlayerPosition = await _dbContext.PlayerPositionsCollection
-                        .Find(pp => pp.Id == offer.PlayerPositionId)
-                        .FirstOrDefaultAsync();
-                }
-
-                if (offer.PlayerFootId != null)
-                {
-                    offer.PlayerFoot = await _dbContext.PlayerFeetCollection
-                        .Find(pf => pf.Id == offer.PlayerFootId)
-                        .FirstOrDefaultAsync();
-                }
-
-                if (offer.PlayerId != null)
-                {
-                    offer.Player = await _dbContext.UsersCollection
-                        .Find(u => u.Id == offer.PlayerId)
-                        .FirstOrDefaultAsync();
-                }
-            }
-
-            return offers.OrderByDescending(po => po.ClubAdvertisement.CreationDate);
         }
 
         public async Task<IEnumerable<Chat>> GetUserChats(string userId)
