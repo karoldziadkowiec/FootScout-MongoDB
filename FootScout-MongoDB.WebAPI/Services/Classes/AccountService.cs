@@ -55,15 +55,11 @@ namespace FootScout_MongoDB.WebAPI.Services.Classes
         {
             var user = await _userRepository.FindUserByEmail(loginDTO.Email);
             if (user == null)
-            {
                 throw new ArgumentException($"User {loginDTO.Email} does not exist.");
-            }
 
             var passwordHash = _passwordService.HashPassword(loginDTO.Password);
             if (passwordHash != user.PasswordHash)
-            {
                 throw new ArgumentException($"Unable to authenticate user {loginDTO.Email} - wrong password.");
-            }
 
             var token = await _tokenService.CreateTokenJWT(user);
             var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
@@ -95,6 +91,7 @@ namespace FootScout_MongoDB.WebAPI.Services.Classes
                     var achievements = await _dbContext.AchievementsCollection
                         .Find(a => a.Id == clubHistory.AchievementsId)
                         .FirstOrDefaultAsync();
+
                     if (achievements != null)
                         await _dbContext.AchievementsCollection.DeleteOneAsync(a => a.Id == clubHistory.AchievementsId);
                 }

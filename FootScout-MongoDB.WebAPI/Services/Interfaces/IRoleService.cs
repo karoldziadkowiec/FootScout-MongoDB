@@ -1,6 +1,4 @@
-﻿using MongoDB.Bson;
-
-namespace FootScout_MongoDB.WebAPI.Services.Interfaces
+﻿namespace FootScout_MongoDB.WebAPI.Services.Interfaces
 {
     public interface IRoleService
     {

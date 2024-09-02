@@ -41,12 +41,16 @@ namespace FootScout_MongoDB.WebAPI.Repositories.Classes
         public async Task UpdateClubHistory(ClubHistory clubHistory)
         {
             var clubHistoryFilter = Builders<ClubHistory>.Filter.Eq(ch => ch.Id, clubHistory.Id);
-            await _dbContext.ClubHistoriesCollection.ReplaceOneAsync(clubHistoryFilter, clubHistory);
 
-            if (clubHistory.Achievements != null && clubHistory.Achievements.Id != 0)
+            if (clubHistoryFilter != null)
             {
-                var achievementsFilter = Builders<Achievements>.Filter.Eq(a => a.Id, clubHistory.Achievements.Id);
-                await _dbContext.AchievementsCollection.ReplaceOneAsync(achievementsFilter, clubHistory.Achievements);
+                if (clubHistory.Achievements != null && clubHistory.Achievements.Id != 0)
+                {
+                    var achievementsFilter = Builders<Achievements>.Filter.Eq(a => a.Id, clubHistory.Achievements.Id);
+                    await _dbContext.AchievementsCollection.ReplaceOneAsync(achievementsFilter, clubHistory.Achievements);
+                }
+
+                await _dbContext.ClubHistoriesCollection.ReplaceOneAsync(clubHistoryFilter, clubHistory);
             }
         }
 
@@ -59,7 +63,7 @@ namespace FootScout_MongoDB.WebAPI.Repositories.Classes
             if (clubHistory == null)
                 throw new ArgumentException($"No club history found with ID {clubHistoryId}");
 
-            if (clubHistory.AchievementsId != null)
+            if (clubHistory.AchievementsId != 0)
             {
                 await _dbContext.AchievementsCollection
                     .DeleteOneAsync(a => a.Id == clubHistory.AchievementsId);

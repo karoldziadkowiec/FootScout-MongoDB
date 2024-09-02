@@ -63,12 +63,27 @@ namespace FootScout_MongoDB.WebAPI.Repositories.Classes
         public async Task UpdatePlayerAdvertisement(PlayerAdvertisement playerAdvertisement)
         {
             var playerAdvertisementFilter = Builders<PlayerAdvertisement>.Filter.Eq(pa => pa.Id, playerAdvertisement.Id);
-            await _dbContext.PlayerAdvertisementsCollection.ReplaceOneAsync(playerAdvertisementFilter, playerAdvertisement);
 
-            if (playerAdvertisement.SalaryRange != null && playerAdvertisement.SalaryRange.Id != 0)
+            if (playerAdvertisementFilter != null)
             {
-                var salaryRangeFilter = Builders<SalaryRange>.Filter.Eq(sr => sr.Id, playerAdvertisement.SalaryRange.Id);
-                await _dbContext.SalaryRangesCollection.ReplaceOneAsync(salaryRangeFilter, playerAdvertisement.SalaryRange);
+                await _dbContext.PlayerAdvertisementsCollection.ReplaceOneAsync(playerAdvertisementFilter, playerAdvertisement);
+
+                if (playerAdvertisement.SalaryRange != null && playerAdvertisement.SalaryRange.Id != 0)
+                {
+                    var salaryRangeFilter = Builders<SalaryRange>.Filter.Eq(sr => sr.Id, playerAdvertisement.SalaryRange.Id);
+                    await _dbContext.SalaryRangesCollection.ReplaceOneAsync(salaryRangeFilter, playerAdvertisement.SalaryRange);
+                }
+
+                var favPlayerAdvertisementsFilter = Builders<FavoritePlayerAdvertisement>.Filter.Eq(fpa => fpa.PlayerAdvertisementId, playerAdvertisement.Id);
+                var favPlayerAdvertisementsUpdate = Builders<FavoritePlayerAdvertisement>.Update
+                    .Set(fpa => fpa.PlayerAdvertisement, playerAdvertisement);
+                await _dbContext.FavoritePlayerAdvertisementsCollection.UpdateManyAsync(favPlayerAdvertisementsFilter, favPlayerAdvertisementsUpdate);
+
+                var clubOffersFilter = Builders<ClubOffer>.Filter.Eq(co => co.PlayerAdvertisementId, playerAdvertisement.Id);
+                var clubOffersUpdate = Builders<ClubOffer>.Update
+                    .Set(co => co.PlayerAdvertisement, playerAdvertisement);
+                await _dbContext.ClubOffersCollection.UpdateManyAsync(clubOffersFilter, clubOffersUpdate);
+
             }
         }
 

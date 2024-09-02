@@ -116,7 +116,7 @@ namespace FootScout_MongoDB.WebAPI.Services.Classes
                 .Find(r => r.Id == userRole.RoleId)
                 .FirstOrDefaultAsync();
 
-            return role?.Name;
+            return role.Name;
         }
 
         public async Task<int> GetUserCount()
@@ -126,14 +126,159 @@ namespace FootScout_MongoDB.WebAPI.Services.Classes
 
         public async Task UpdateUser(string userId, UserUpdateDTO dto)
         {
-            var user = await _dbContext.UsersCollection
+            var _user = await _dbContext.UsersCollection
                 .Find(u => u.Id == userId)
                 .FirstOrDefaultAsync();
 
-            if (user != null)
+            if (_user != null)
             {
-                _mapper.Map(dto, user);
+                var user = _mapper.Map(dto, _user);
                 await _dbContext.UsersCollection.ReplaceOneAsync(u => u.Id == userId, user);
+
+                var userRolesFilter = Builders<UserRole>.Filter.Eq(ur => ur.UserId, userId);
+                var userRolesUpdate = Builders<UserRole>.Update
+                    .Set(ur => ur.UserId, user.Id)
+                    .Set(ur => ur.User, user);
+                await _dbContext.UserRolesCollection.UpdateManyAsync(userRolesFilter, userRolesUpdate);
+
+                var clubHistoriesFilter = Builders<ClubHistory>.Filter.Eq(ch => ch.PlayerId, userId);
+                var clubHistoriesUpdate = Builders<ClubHistory>.Update
+                    .Set(ch => ch.PlayerId, user.Id)
+                    .Set(ch => ch.Player, user);
+                await _dbContext.ClubHistoriesCollection.UpdateManyAsync(clubHistoriesFilter, clubHistoriesUpdate);
+
+                var playerAdvertisementsFilter = Builders<PlayerAdvertisement>.Filter.Eq(pa => pa.PlayerId, userId);
+                var playerAdvertisementsUpdate = Builders<PlayerAdvertisement>.Update
+                    .Set(pa => pa.PlayerId, user.Id)
+                    .Set(pa => pa.Player, user);
+                await _dbContext.PlayerAdvertisementsCollection.UpdateManyAsync(playerAdvertisementsFilter, playerAdvertisementsUpdate);
+
+                var favPlayerAdvertisementsFilter = Builders<FavoritePlayerAdvertisement>.Filter.Eq(fpa => fpa.UserId, userId);
+                var favPlayerAdvertisementsUpdate = Builders<FavoritePlayerAdvertisement>.Update
+                    .Set(fpa => fpa.UserId, user.Id)
+                    .Set(fpa => fpa.User, user);
+                await _dbContext.FavoritePlayerAdvertisementsCollection.UpdateManyAsync(favPlayerAdvertisementsFilter, favPlayerAdvertisementsUpdate);
+
+                var clubOffers = await _dbContext.ClubOffersCollection
+                    .Find(co => co.ClubMemberId == userId || co.PlayerAdvertisement.PlayerId == userId)
+                    .ToListAsync();
+
+                foreach (var offer in clubOffers)
+                {
+                    if (offer.ClubMemberId == userId)
+                    {
+                        offer.ClubMemberId = user.Id;
+                        offer.ClubMember = user;
+                    }
+                    if (offer.PlayerAdvertisement.PlayerId == userId)
+                    {
+                        offer.PlayerAdvertisement.PlayerId = user.Id;
+                        offer.PlayerAdvertisement.Player = user;
+                    }
+
+                    await _dbContext.ClubOffersCollection.ReplaceOneAsync(
+                        co => co.Id == offer.Id,
+                        offer
+                    );
+                }
+
+                var clubAdvertisementsFilter = Builders<ClubAdvertisement>.Filter.Eq(ca => ca.ClubMemberId, userId);
+                var clubAdvertisementsUpdate = Builders<ClubAdvertisement>.Update
+                    .Set(ca => ca.ClubMemberId, user.Id)
+                    .Set(ca => ca.ClubMember, user);
+                await _dbContext.ClubAdvertisementsCollection.UpdateManyAsync(clubAdvertisementsFilter, clubAdvertisementsUpdate);
+
+                var favClubAdvertisementsFilter = Builders<FavoriteClubAdvertisement>.Filter.Eq(fca => fca.UserId, userId);
+                var favClubAdvertisementsUpdate = Builders<FavoriteClubAdvertisement>.Update
+                    .Set(fca => fca.UserId, user.Id)
+                    .Set(fca => fca.User, user);
+                await _dbContext.FavoriteClubAdvertisementsCollection.UpdateManyAsync(favClubAdvertisementsFilter, favClubAdvertisementsUpdate);
+
+                var playerOffers = await _dbContext.PlayerOffersCollection
+                    .Find(po => po.PlayerId == userId || po.ClubAdvertisement.ClubMemberId == userId)
+                    .ToListAsync();
+
+                foreach (var offer in playerOffers)
+                {
+                    if (offer.PlayerId == userId)
+                    {
+                        offer.PlayerId = user.Id;
+                        offer.Player = user;
+                    }
+                    if (offer.ClubAdvertisement.ClubMemberId == userId)
+                    {
+                        offer.ClubAdvertisement.ClubMemberId = user.Id;
+                        offer.ClubAdvertisement.ClubMember = user;
+                    }
+
+                    await _dbContext.PlayerOffersCollection.ReplaceOneAsync(
+                        po => po.Id == offer.Id,
+                        offer
+                    );
+                }
+
+                var chats = await _dbContext.ChatsCollection
+                    .Find(c => c.User1Id == userId || c.User2Id == userId)
+                    .ToListAsync();
+
+                foreach (var chat in chats)
+                {
+                    if (chat.User1Id == userId)
+                    {
+                        chat.User1Id = user.Id;
+                        chat.User1 = user;
+                    }
+                    if (chat.User2Id == userId)
+                    {
+                        chat.User2Id = user.Id;
+                        chat.User2 = user;
+                    }
+
+                    await _dbContext.ChatsCollection.ReplaceOneAsync(
+                        c => c.Id == chat.Id,
+                        chat
+                    );
+                }
+
+                var messages = await _dbContext.MessagesCollection
+                    .Find(m => m.SenderId == userId || m.ReceiverId == userId)
+                    .ToListAsync();
+
+                foreach (var message in messages)
+                {
+                    if (message.SenderId == userId)
+                    {
+                        message.SenderId = user.Id;
+                        message.Sender = user;
+                    }
+                    if (message.ReceiverId == userId)
+                    {
+                        message.ReceiverId = user.Id;
+                        message.Receiver = user;
+                    }
+
+                    if (message.Chat.User1Id == userId)
+                    {
+                        message.Chat.User1Id = user.Id;
+                        message.Chat.User1 = user;
+                    }
+                    if (message.Chat.User2Id == userId)
+                    {
+                        message.Chat.User2Id = user.Id;
+                        message.Chat.User2 = user;
+                    }
+
+                    await _dbContext.MessagesCollection.ReplaceOneAsync(
+                        m => m.Id == message.Id,
+                        message
+                    );
+                }
+
+                var problemsFilter = Builders<Problem>.Filter.Eq(p => p.RequesterId, userId);
+                var problemsUpdate = Builders<Problem>.Update
+                    .Set(p => p.RequesterId, user.Id)
+                    .Set(p => p.Requester, user);
+                await _dbContext.ProblemsCollection.UpdateManyAsync(problemsFilter, problemsUpdate);
             }
         }
 
@@ -152,6 +297,151 @@ namespace FootScout_MongoDB.WebAPI.Services.Classes
                     user.PasswordHash = _passwordService.HashPassword(dto.PasswordHash);
 
                 await _dbContext.UsersCollection.ReplaceOneAsync(u => u.Id == userId, user);
+
+                var userRolesFilter = Builders<UserRole>.Filter.Eq(ur => ur.UserId, userId);
+                var userRolesUpdate = Builders<UserRole>.Update
+                    .Set(ur => ur.UserId, user.Id)
+                    .Set(ur => ur.User, user);
+                await _dbContext.UserRolesCollection.UpdateManyAsync(userRolesFilter, userRolesUpdate);
+
+                var clubHistoriesFilter = Builders<ClubHistory>.Filter.Eq(ch => ch.PlayerId, userId);
+                var clubHistoriesUpdate = Builders<ClubHistory>.Update
+                    .Set(ch => ch.PlayerId, user.Id)
+                    .Set(ch => ch.Player, user);
+                await _dbContext.ClubHistoriesCollection.UpdateManyAsync(clubHistoriesFilter, clubHistoriesUpdate);
+
+                var playerAdvertisementsFilter = Builders<PlayerAdvertisement>.Filter.Eq(pa => pa.PlayerId, userId);
+                var playerAdvertisementsUpdate = Builders<PlayerAdvertisement>.Update
+                    .Set(pa => pa.PlayerId, user.Id)
+                    .Set(pa => pa.Player, user);
+                await _dbContext.PlayerAdvertisementsCollection.UpdateManyAsync(playerAdvertisementsFilter, playerAdvertisementsUpdate);
+
+                var favPlayerAdvertisementsFilter = Builders<FavoritePlayerAdvertisement>.Filter.Eq(fpa => fpa.UserId, userId);
+                var favPlayerAdvertisementsUpdate = Builders<FavoritePlayerAdvertisement>.Update
+                    .Set(fpa => fpa.UserId, user.Id)
+                    .Set(fpa => fpa.User, user);
+                await _dbContext.FavoritePlayerAdvertisementsCollection.UpdateManyAsync(favPlayerAdvertisementsFilter, favPlayerAdvertisementsUpdate);
+
+                var clubOffers = await _dbContext.ClubOffersCollection
+                    .Find(co => co.ClubMemberId == userId || co.PlayerAdvertisement.PlayerId == userId)
+                    .ToListAsync();
+
+                foreach (var offer in clubOffers)
+                {
+                    if (offer.ClubMemberId == userId)
+                    {
+                        offer.ClubMemberId = user.Id;
+                        offer.ClubMember = user;
+                    }
+                    if (offer.PlayerAdvertisement.PlayerId == userId)
+                    {
+                        offer.PlayerAdvertisement.PlayerId = user.Id;
+                        offer.PlayerAdvertisement.Player = user;
+                    }
+
+                    await _dbContext.ClubOffersCollection.ReplaceOneAsync(
+                        co => co.Id == offer.Id,
+                        offer
+                    );
+                }
+
+                var clubAdvertisementsFilter = Builders<ClubAdvertisement>.Filter.Eq(ca => ca.ClubMemberId, userId);
+                var clubAdvertisementsUpdate = Builders<ClubAdvertisement>.Update
+                    .Set(ca => ca.ClubMemberId, user.Id)
+                    .Set(ca => ca.ClubMember, user);
+                await _dbContext.ClubAdvertisementsCollection.UpdateManyAsync(clubAdvertisementsFilter, clubAdvertisementsUpdate);
+
+                var favClubAdvertisementsFilter = Builders<FavoriteClubAdvertisement>.Filter.Eq(fca => fca.UserId, userId);
+                var favClubAdvertisementsUpdate = Builders<FavoriteClubAdvertisement>.Update
+                    .Set(fca => fca.UserId, user.Id)
+                    .Set(fca => fca.User, user);
+                await _dbContext.FavoriteClubAdvertisementsCollection.UpdateManyAsync(favClubAdvertisementsFilter, favClubAdvertisementsUpdate);
+
+                var playerOffers = await _dbContext.PlayerOffersCollection
+                    .Find(po => po.PlayerId == userId || po.ClubAdvertisement.ClubMemberId == userId)
+                    .ToListAsync();
+
+                foreach (var offer in playerOffers)
+                {
+                    if (offer.PlayerId == userId)
+                    {
+                        offer.PlayerId = user.Id;
+                        offer.Player = user;
+                    }
+                    if (offer.ClubAdvertisement.ClubMemberId == userId)
+                    {
+                        offer.ClubAdvertisement.ClubMemberId = user.Id;
+                        offer.ClubAdvertisement.ClubMember = user;
+                    }
+
+                    await _dbContext.PlayerOffersCollection.ReplaceOneAsync(
+                        po => po.Id == offer.Id,
+                        offer
+                    );
+                }
+
+                var chats = await _dbContext.ChatsCollection
+                    .Find(c => c.User1Id == userId || c.User2Id == userId)
+                    .ToListAsync();
+
+                foreach (var chat in chats)
+                {
+                    if (chat.User1Id == userId)
+                    {
+                        chat.User1Id = user.Id;
+                        chat.User1 = user;
+                    }
+                    if (chat.User2Id == userId)
+                    {
+                        chat.User2Id = user.Id;
+                        chat.User2 = user;
+                    }
+
+                    await _dbContext.ChatsCollection.ReplaceOneAsync(
+                        c => c.Id == chat.Id,
+                        chat
+                    );
+                }
+
+                var messages = await _dbContext.MessagesCollection
+                    .Find(m => m.SenderId == userId || m.ReceiverId == userId)
+                    .ToListAsync();
+
+                foreach (var message in messages)
+                {
+                    if (message.SenderId == userId)
+                    {
+                        message.SenderId = user.Id;
+                        message.Sender = user;
+                    }
+                    if (message.ReceiverId == userId)
+                    {
+                        message.ReceiverId = user.Id;
+                        message.Receiver = user;
+                    }
+
+                    if (message.Chat.User1Id == userId)
+                    {
+                        message.Chat.User1Id = user.Id;
+                        message.Chat.User1 = user;
+                    }
+                    if (message.Chat.User2Id == userId)
+                    {
+                        message.Chat.User2Id = user.Id;
+                        message.Chat.User2 = user;
+                    }
+
+                    await _dbContext.MessagesCollection.ReplaceOneAsync(
+                        m => m.Id == message.Id,
+                        message
+                    );
+                }
+
+                var problemsFilter = Builders<Problem>.Filter.Eq(p => p.RequesterId, userId);
+                var problemsUpdate = Builders<Problem>.Update
+                    .Set(p => p.RequesterId, user.Id)
+                    .Set(p => p.Requester, user);
+                await _dbContext.ProblemsCollection.UpdateManyAsync(problemsFilter, problemsUpdate);
             }
         }
 
@@ -160,8 +450,12 @@ namespace FootScout_MongoDB.WebAPI.Services.Classes
             var user = await _dbContext.UsersCollection
                 .Find(u => u.Id == userId)
                 .FirstOrDefaultAsync();
+
             if (user == null)
                 throw new Exception("User not found");
+
+            await _dbContext.UserRolesCollection
+                .DeleteManyAsync(ur => ur.UserId == userId);
 
             var clubHistories = await _dbContext.ClubHistoriesCollection
                 .Find(ch => ch.PlayerId == userId)
@@ -169,7 +463,7 @@ namespace FootScout_MongoDB.WebAPI.Services.Classes
 
             foreach (var clubHistory in clubHistories)
             {
-                if (clubHistory.AchievementsId != null)
+                if (clubHistory.AchievementsId != 0)
                 {
                     var achievements = await _dbContext.AchievementsCollection
                         .Find(a => a.Id == clubHistory.AchievementsId)
@@ -279,6 +573,9 @@ namespace FootScout_MongoDB.WebAPI.Services.Classes
                 await _dbContext.PlayerOffersCollection
                     .ReplaceOneAsync(po => po.Id == offer.Id, offer);
             }
+
+            await _dbContext.ProblemsCollection
+                .DeleteManyAsync(p => p.RequesterId == userId);
 
             await _dbContext.UsersCollection
                 .DeleteOneAsync(u => u.Id == userId);

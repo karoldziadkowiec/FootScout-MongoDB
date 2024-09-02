@@ -10,11 +10,11 @@
         Task<int> GenerateNewClubHistoryId();
         Task<int> GenerateNewSalaryRangeId();
         Task<int> GenerateNewPlayerAdvertisementId();
-        Task<int> GenerateNewFavoritePlayerAdvertisementId();
         Task<int> GenerateNewClubOfferId();
+        Task<int> GenerateNewFavoritePlayerAdvertisementId();
         Task<int> GenerateNewClubAdvertisementId();
-        Task<int> GenerateNewFavoriteClubAdvertisementId();
         Task<int> GenerateNewPlayerOfferId();
+        Task<int> GenerateNewFavoriteClubAdvertisementId();
         Task<int> GenerateNewProblemId();
         Task<int> GenerateNewChatId();
         Task<int> GenerateNewMessageId();
