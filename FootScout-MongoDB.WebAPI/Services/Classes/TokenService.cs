@@ -1,4 +1,5 @@
 ﻿using FootScout_MongoDB.WebAPI.Entities;
+using FootScout_MongoDB.WebAPI.Repositories.Interfaces;
 using FootScout_MongoDB.WebAPI.Services.Interfaces;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;

@@ -77,7 +77,7 @@ namespace FootScout_MongoDB.WebAPI.Repositories.Classes
         {
             var problems = await GetAllProblems();
             var csv = new StringBuilder();
-            csv.AppendLine("Chat Id,Is Solved,Requester E-mail,Requester First Name,Requester Last Name,Title,Description,Creation Date");
+            csv.AppendLine("Problem Id,Is Solved,Requester E-mail,Requester First Name,Requester Last Name,Title,Description,Creation Date");
 
             foreach (var problem in problems)
             {

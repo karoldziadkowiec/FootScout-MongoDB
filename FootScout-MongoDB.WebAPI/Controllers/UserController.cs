@@ -1,6 +1,6 @@
 ﻿using FootScout_MongoDB.WebAPI.Entities;
 using FootScout_MongoDB.WebAPI.Models.DTOs;
-using FootScout_MongoDB.WebAPI.Services.Interfaces;
+using FootScout_MongoDB.WebAPI.Repositories.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,30 +15,6 @@ namespace FootScout_MongoDB.WebAPI.Controllers
 
         public UserController(IUserRepository userRepository) =>
             _userRepository = userRepository;
-
-        // GET: api/users/email/:email
-        [HttpGet("email/{email}")]
-        public async Task<ActionResult<User>> FindUserByEmail(string email)
-        {
-            var user = await _userRepository.FindUserByEmail(email);
-            return Ok(user);
-        }
-
-        // GET: api/users/:userId/roles
-        [HttpGet("{userId}/roles")]
-        public async Task<IActionResult> GetRolesForUser(string userId)
-        {
-            var roles = await _userRepository.GetRolesForUser(userId);
-            return Ok(roles);
-        }
-
-        // GET: api/users/:userId/roles/:roleName
-        [HttpGet("{userId}/roles/{roleName}")]
-        public async Task<IActionResult> GetUsersByRoleName(string roleName)
-        {
-            var usersByRoleName = await _userRepository.GetRolesForUser(roleName);
-            return Ok(usersByRoleName);
-        }
 
         // GET: api/users/:userId
         [HttpGet("{userId}")]
@@ -93,9 +69,19 @@ namespace FootScout_MongoDB.WebAPI.Controllers
 
         // PUT: api/users/:userId
         [HttpPut("{userId}")]
-        public async Task<IActionResult> UpdateUser(string userId, [FromBody] UserUpdateDTO dto)
+        public async Task<IActionResult> UpdateUser(string userId, UserUpdateDTO dto)
         {
-            await _userRepository.UpdateUser(userId, dto);
+            try
+            {
+                await _userRepository.UpdateUser(userId, dto);
+            }
+            catch (Exception ex)
+            {
+                if (await _userRepository.GetUser(userId) == null)
+                    return NotFound($"User {userId} not found");
+                else
+                    throw;
+            }
             return NoContent();
         }
 
@@ -103,7 +89,17 @@ namespace FootScout_MongoDB.WebAPI.Controllers
         [HttpPut("reset-password/{userId}")]
         public async Task<IActionResult> ResetUserPassword(string userId, [FromBody] UserResetPasswordDTO dto)
         {
-            await _userRepository.ResetUserPassword(userId, dto);
+            try
+            {
+                await _userRepository.ResetUserPassword(userId, dto);
+            }
+            catch (Exception ex)
+            {
+                if (await _userRepository.GetUser(userId) == null)
+                    return NotFound($"User {userId} not found");
+                else
+                    throw;
+            }
             return NoContent();
         }
         
@@ -113,14 +109,19 @@ namespace FootScout_MongoDB.WebAPI.Controllers
         {
             try
             {
-                if (await _userRepository.GetUser(userId) == null)
+                var user = await _userRepository.GetUser(userId);
+                if (user == null)
                     return NotFound($"User {userId} not found");
 
                 await _userRepository.DeleteUser(userId);
             }
-            catch (Exception)
+            catch (InvalidOperationException ex)
             {
-                return NotFound();
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.InnerException?.Message ?? ex.Message}");
             }
             return NoContent();
         }

@@ -1,7 +1,7 @@
 ﻿using FootScout_MongoDB.WebAPI.Entities;
 using FootScout_MongoDB.WebAPI.Models.DTOs;
 
-namespace FootScout_MongoDB.WebAPI.Services.Interfaces
+namespace FootScout_MongoDB.WebAPI.Repositories.Interfaces
 {
     public interface IUserRepository
     {

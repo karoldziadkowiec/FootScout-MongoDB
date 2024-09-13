@@ -21,7 +21,7 @@ namespace FootScout_MongoDB.WebAPI
             var builder = WebApplication.CreateBuilder(args);
             var configuration = builder.Configuration;
 
-            // Database connection
+            // MongoDB management
             builder.Services.Configure<MongoDBSettings>(
                 configuration.GetSection(nameof(MongoDBSettings)));
             builder.Services.AddSingleton<MongoDBContext>();

@@ -32,7 +32,7 @@ namespace FootScout_MongoDB.WebAPI.Controllers
 
         // GET: api/club-advertisements/:clubAdvertisementId
         [HttpGet("{clubAdvertisementId}")]
-        public async Task<ActionResult<PlayerAdvertisement>> GetClubAdvertisement(int clubAdvertisementId)
+        public async Task<ActionResult<ClubAdvertisement>> GetClubAdvertisement(int clubAdvertisementId)
         {
             var clubAdvertisement = await _clubAdvertisementRepository.GetClubAdvertisement(clubAdvertisementId);
             if (clubAdvertisement == null)
@@ -43,7 +43,7 @@ namespace FootScout_MongoDB.WebAPI.Controllers
 
         // GET: api/club-advertisements
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<PlayerAdvertisement>>> GetAllClubAdvertisements()
+        public async Task<ActionResult<IEnumerable<ClubAdvertisement>>> GetAllClubAdvertisements()
         {
             var clubAdvertisements = await _clubAdvertisementRepository.GetAllClubAdvertisements();
             return Ok(clubAdvertisements);
@@ -51,7 +51,7 @@ namespace FootScout_MongoDB.WebAPI.Controllers
 
         // GET: api/club-advertisements/active
         [HttpGet("active")]
-        public async Task<ActionResult<IEnumerable<PlayerAdvertisement>>> GetActiveClubAdvertisements()
+        public async Task<ActionResult<IEnumerable<ClubAdvertisement>>> GetActiveClubAdvertisements()
         {
             var activeClubAdvertisements = await _clubAdvertisementRepository.GetActiveClubAdvertisements();
             return Ok(activeClubAdvertisements);
@@ -67,7 +67,7 @@ namespace FootScout_MongoDB.WebAPI.Controllers
 
         // GET: api/club-advertisements/inactive
         [HttpGet("inactive")]
-        public async Task<ActionResult<IEnumerable<PlayerAdvertisement>>> GetInactiveClubAdvertisements()
+        public async Task<ActionResult<IEnumerable<ClubAdvertisement>>> GetInactiveClubAdvertisements()
         {
             var inactiveClubAdvertisements = await _clubAdvertisementRepository.GetInactiveClubAdvertisements();
             return Ok(inactiveClubAdvertisements);

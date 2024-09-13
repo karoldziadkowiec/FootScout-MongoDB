@@ -3,6 +3,7 @@ using FootScout_MongoDB.WebAPI.DbManager;
 using FootScout_MongoDB.WebAPI.Entities;
 using FootScout_MongoDB.WebAPI.Models.Constants;
 using FootScout_MongoDB.WebAPI.Models.DTOs;
+using FootScout_MongoDB.WebAPI.Repositories.Interfaces;
 using FootScout_MongoDB.WebAPI.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using MongoDB.Driver;

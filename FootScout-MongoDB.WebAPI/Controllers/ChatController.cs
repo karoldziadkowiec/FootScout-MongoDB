@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using FootScout_MongoDB.WebAPI.Entities;
 using FootScout_MongoDB.WebAPI.Models.DTOs;
+using FootScout_MongoDB.WebAPI.Repositories.Interfaces;
 using FootScout_MongoDB.WebAPI.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
