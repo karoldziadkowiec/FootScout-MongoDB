@@ -26,20 +26,20 @@ namespace FootScout_MongoDB.WebAPI.Repositories.Classes
 
         public async Task<string> GetOfferStatusName(int statusId)
         {
-            var offrStatus = await _dbContext.OfferStatusesCollection
+            var offerStatus = await _dbContext.OfferStatusesCollection
                 .Find(os => os.Id == statusId)
                 .FirstOrDefaultAsync();
 
-            return offrStatus.StatusName;
+            return offerStatus?.StatusName;
         }
 
         public async Task<int> GetOfferStatusId(string statusName)
         {
-            var offrStatus = await _dbContext.OfferStatusesCollection
+            var offerStatus = await _dbContext.OfferStatusesCollection
                 .Find(os => os.StatusName == statusName)
                 .FirstOrDefaultAsync();
 
-            return offrStatus.Id;
+            return offerStatus?.Id ?? 0;
         }
     }
 }
