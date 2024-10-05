@@ -358,7 +358,7 @@ namespace FootScout_MongoDB.WebAPI.Services.Classes
                     ClubName = $"ClubName {i}",
                     League = $"League {i}",
                     Region = $"Region {i}",
-                    SalaryRangeId = testCounter + salaryRanges[i - 1].Id,
+                    SalaryRangeId = salaryRanges[i - 1].Id,
                     SalaryRange = salaryRanges[i - 1],
                     CreationDate = DateTime.Now,
                     EndDate = DateTime.Now.AddDays(30),
