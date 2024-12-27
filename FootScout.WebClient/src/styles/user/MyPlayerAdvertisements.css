@@ -1,0 +1,44 @@
+.MyPlayerAdvertisements {
+    text-align: center;
+    background-color: rgb(240, 247, 240);
+    padding: 20px 10% 20px 10%;
+}
+
+.modal-content-centered {
+    text-align: center;
+    margin: 0 auto;
+}
+
+.button-spacing {
+    margin-right: 10px;
+}
+
+.custom-tabs .nav-link {
+    color: rgb(0, 0, 0) !important;
+}
+
+.custom-tabs .nav-link.active {
+    background-color: rgb(48, 48, 48) !important;
+    color: rgb(255, 255, 255) !important;
+}
+
+.custom-tabs .nav-link:hover {
+    color: rgb(223, 223, 223) !important;
+}
+
+/* Responsive Table */
+.table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.table-responsive table {
+    min-width: 600px;
+}
+
+/* Mobile Specific Styles */
+@media (max-width: 576px) {
+    .table-responsive table {
+        min-width: 100%;
+    }
+}

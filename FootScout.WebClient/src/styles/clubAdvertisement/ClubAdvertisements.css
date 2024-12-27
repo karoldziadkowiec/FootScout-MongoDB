@@ -1,0 +1,68 @@
+.ClubAdvertisements {
+    text-align: center;
+    background-color: rgb(240, 247, 240);
+    padding: 20px 10% 20px 10%;
+}
+
+.modal-content-centered {
+    text-align: center;
+    margin: 0 auto;
+}
+
+.button-spacing {
+    margin-right: 10px;
+}
+
+/* Responsive Table */
+.table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.ad-row {
+    line-height: 6;
+}
+
+.table-responsive table {
+    min-width: 600px;
+}
+
+/* Mobile Specific Styles */
+@media (max-width: 576px) {
+    .table-responsive table {
+        min-width: 100%;
+    }
+}
+
+.pagination-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
+
+.pagination-green {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.pagination-green .page-item {
+    margin: 2px;
+}
+
+.pagination-green .page-item .page-link {
+    background-color: #54c16d;
+    border-color: #54c16d;
+    color: #fff;
+}
+
+.pagination-green .page-item.active .page-link {
+    background-color: #186128; 
+    border-color: #186128;
+}
+
+.pagination-green .page-item .page-link:hover {
+    background-color: #2b8f41;
+    border-color: #2b8f41;
+}

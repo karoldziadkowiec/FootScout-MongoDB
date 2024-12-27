@@ -1,0 +1,99 @@
+.PlayerAdvertisement {
+    background-color: rgb(240, 247, 240);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 10% 20px 10%;
+    font-size: 17px;
+}
+
+.ad-buttons-container {
+    background-color: rgb(71, 71, 71);
+    display: flex;
+    gap: 10px;
+    border-radius: 20px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding: 15px;
+}
+
+.ad-form-button {
+    width: 200px;
+}
+
+.status-label {
+    width: 200px;
+    font-size: 20px;
+    color: rgb(240, 255, 108);
+}
+
+.ad-status-container {
+    background-color: rgb(255, 161, 161);
+    width: 150px;
+    border-radius: 30px;
+    padding-top: 10px;
+}
+
+.ad-container {
+    background-color: rgb(237, 237, 227);
+    width: 90%;
+    border-radius: 30px;
+    padding-top: 10px;
+    padding-bottom: 1cap;
+    margin-bottom: 20px;
+}
+
+.ad-name-label {
+    color: rgb(170, 161, 38);
+    font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    font-size: 36px;
+    font-weight: bold;
+}
+
+.ad-section {
+    color: rgb(98, 96, 83);
+    font-family:'Times New Roman', Times, serif;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.ad-data-label {
+    color: rgb(96, 90, 0);
+    font-weight: bold;
+    margin-left: 5px;
+}
+
+.ad-creationDate-label {
+    color: rgb(79, 80, 73);
+    font-style: italic;
+    font-weight: bold;
+    margin-left: 5px;
+}
+
+.ad-table-responsive {
+    padding-left: 5%;
+    padding-right: 5%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.clubHistory-name-label {
+    color: rgb(148, 141, 42);
+    font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    font-size: 32px;
+    font-weight: bold;
+}
+
+.clubHistory-position-label {
+    color: rgb(99, 99, 92);
+    font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.clubHistory-section {
+    color: rgb(98, 96, 83);
+    font-family:'Times New Roman', Times, serif;
+    font-size: 20px;
+    font-weight: bold;
+}
