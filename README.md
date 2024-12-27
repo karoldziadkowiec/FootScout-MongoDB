@@ -19,7 +19,7 @@ Other versions of the project:
 - **ASP.NET Core Web API** (8.0)
 - **C#** (12.0)
     - asynchronous programming (async/await)
-    - authentication (**JWT Bearer**), authorization, policies
+    - authentication (**JWT Bearer**), authorization with roles, policies
     - real-time communication between users (**SignalR**)
     - Dependency Injection, DTO, Controller, Service, Repository patterns
     - configuration management with file *appsettings.json*
@@ -47,7 +47,7 @@ Other versions of the project:
 - **React** (18.3.1)
     - **TypeScript** (4.9.5)
         - asynchronous programming (async/await)
-        - authentication (**JWT Bearer**), authorization, cookies management
+        - authentication (**JWT Bearer**), authorization with roles, cookies management
         - real-time communication between users (**microsoft/signalR**)
         - Service, Modal, Pagination, Routing patterns
         - Hooks
