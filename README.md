@@ -16,7 +16,7 @@ Other versions of the project:
 
 ## Technologies
 ### Backend (server)
-- **ASP.NET Core Web API** (8.0)
+- **ASP.NET Core Web API** (.NET 8.0)
 - **C#** (12.0)
     - asynchronous programming (async/await)
     - authentication (**JWT Bearer**), authorization with roles, policies
