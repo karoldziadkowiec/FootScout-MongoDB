@@ -25,7 +25,6 @@ Other versions of the project:
     - configuration management with file *appsettings.json*
     - application's seeder during the initial launch
     - password hashing
-    - LINQ queries
 - Database system: 
     - **MongoDB**
         - **18** collections
