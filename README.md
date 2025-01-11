@@ -36,9 +36,9 @@ Other versions of the project:
     - **IdentityModel.Tokens.Jwt**
     - **AutoMapper**
     - **ClosedXML**
-- Unit and Integration testing: 
+- Unit and Integration tests: 
     - **xUnit**
-- API testing by:
+- API tested by:
     - **Swagger UI**
     - **Postman**
 
