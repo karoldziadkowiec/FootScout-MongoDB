@@ -1,4 +1,4 @@
-const ApiPORT: number = 7272;    // MongoDB
+const ApiPORT: number = 7272;
 
 const HubName: string = 'chathub';
 
