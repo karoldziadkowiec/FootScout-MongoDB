@@ -3,16 +3,19 @@
 ## About project
 The project is a web application presenting a complex platform for managing football transfers. The application allows players to search for football clubs and clubs to search for players for specific positions of a football team. The system solves a problem related to the lack of a tool to facilitate the effective management of football transfers at different levels of the world's competition. To date, player transfers were mainly carried out through telephone contact, which did not provide an adequate level of organization. The application aims to improve players' skills through proper club selection and thus improve the quality of the game in the world's most popular sport. To check the quality of the software, unit tests and integration tests have been conducted using xUnit tool.
 
-The project uses a database system: **MongoDB**. 
+The project was built using **React** & **ASP.NET Core Web API** & **MongoDB**.
 
 Other versions of the project:
-- **Microsoft SQL Server**: https://github.com/karoldziadkowiec/FootScout
-- **PostgreSQL**: https://github.com/karoldziadkowiec/FootScout-PostgreSQL
+- **React** & **ASP.NET Core Web API** & **MS SQL**: https://github.com/karoldziadkowiec/FootScout
+- **React** & **ASP.NET Core Web API** & **PostgreSQL**: https://github.com/karoldziadkowiec/FootScout-PostgreSQL
+- **Vue** & **ASP.NET Core Web API** & **MS SQL**: https://github.com/karoldziadkowiec/FootScout-Vue
 
 ## Construction and communication of application
 - Application type: **web application**
 - Architecture: **client-server**
-- Communication: **REST API**
+- Communication:
+    - **REST API** 
+    - real-time communication (**SignalR**)
 
 ## Technologies
 ### Backend (server)
